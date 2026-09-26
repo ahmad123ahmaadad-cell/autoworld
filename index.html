@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AutoWorld</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial}
+body{background:#f3f4f6;color:#151515}
+button,input,select,textarea{font:inherit}
+button{border:0;cursor:pointer}
+.app{max-width:520px;margin:auto;background:#fff;min-height:100vh;padding-bottom:80px}
+.header{background:#111;color:#fff;padding:18px;border-radius:0 0 25px 25px}
+.top{display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:25px;font-weight:900}.logo span{color:#e63946}
+.icon{width:42px;height:42px;border-radius:50%;background:#292929;display:grid;place-items:center}
+.location{font-size:12px;color:#aaa;margin-top:14px}
+.search{background:#fff;color:#111;border-radius:14px;padding:12px;margin-top:12px;display:flex;gap:8px}
+.search input{border:0;outline:0;width:100%}
+
+.page{display:none}.page.active{display:block}
+.pad{padding:20px}
+h1{font-size:23px;margin-bottom:6px}
+h2{font-size:19px}
+.muted{color:#777;font-size:13px;margin-top:6px}
+.title{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.service{height:135px;border-radius:20px;color:white;padding:16px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden}
+.service .emoji{position:absolute;top:13px;right:15px;font-size:37px}
+.service b{font-size:16px}.service small{opacity:.8;margin-top:5px}
+.s1{background:linear-gradient(135deg,#111,#444)}
+.s2{background:linear-gradient(135deg,#a71919,#ef5350)}
+.s3{background:linear-gradient(135deg,#00695c,#26a69a)}
+.s4{background:linear-gradient(135deg,#07529c,#42a5f5)}
+
+.section{padding:18px}
+.cards{display:flex;gap:12px;overflow:auto}.cards::-webkit-scrollbar{display:none}
+.card{min-width:225px;border:1px solid #eee;border-radius:18px;overflow:hidden;background:#fff}
+.photo{height:135px;background:#ddd;display:grid;place-items:center;font-size:65px}
+.photo img{width:100%;height:100%;object-fit:cover}
+.cardbody{padding:12px}.cardbody h3{font-size:16px}
+.price{color:#e63946;font-weight:bold;margin-top:8px}
+
+.field{margin-top:13px}
+.field label{display:block;font-size:13px;font-weight:bold;margin-bottom:6px}
+.field input,.field select,.field textarea{
+width:100%;padding:13px;border:1px solid #ddd;border-radius:12px;outline:none;background:#fff
+}
+.field textarea{height:90px}
+.btn{width:100%;padding:14px;border-radius:13px;background:#e63946;color:white;font-weight:bold;margin-top:16px}
+.gray{background:#eee;color:#111}
+
+.list{padding:0 18px}
+.item{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid #eee}
+.thumb{width:95px;height:75px;background:#ddd;border-radius:12px;display:grid;place-items:center;font-size:35px;overflow:hidden}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.info{flex:1}.info h3{font-size:15px}.info p{font-size:11px;color:#777;margin-top:5px}
+.heart{font-size:21px;background:none}
+
+.bottom{
+position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+width:100%;max-width:520px;height:70px;background:#fff;
+border-top:1px solid #ddd;display:flex;justify-content:space-around;
+align-items:center;z-index:20
+}
+.nav{text-align:center;color:#777;font-size:10px;cursor:pointer}
+.nav div{font-size:21px;margin-bottom:3px}.nav.active{color:#e63946}
+
+.modal{
+display:none;position:fixed;inset:0;background:#0008;z-index:50;
+align-items:flex-end
+}
+.modal.show{display:flex}
+.modalbox{
+background:white;width:100%;max-width:520px;margin:auto;
+border-radius:25px 25px 0 0;padding:22px;max-height:90vh;overflow:auto
+}
+.close{float:left;border-radius:50%;width:34px;height:34px;background:#eee}
+
+.toast{
+position:fixed;bottom:85px;left:50%;transform:translateX(-50%);
+background:#111;color:#fff;padding:12px 18px;border-radius:12px;
+display:none;z-index:100;font-size:13px
+}
+.toast.show{display:block}
+
+.profile{text-align:center;padding:25px 18px}
+.avatar{width:80px;height:80px;border-radius:50%;background:#111;color:white;margin:auto;display:grid;place-items:center;font-size:32px}
+.menu button{display:block;width:100%;padding:17px;background:white;text-align:right;border-bottom:1px solid #eee}
+
+.route{display:flex;gap:8px;align-items:center;margin-top:12px}
+.route>*{flex:1}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<header class="header">
+<div class="top">
+<div class="logo">Auto<span>World</span></div>
+<div class="icon" onclick="page('account')">👤</div>
+</div>
+<div class="location">📍 <span id="loc">اختر موقعك</span></div>
+<div class="search">
+🔍 <input id="search" placeholder="ابحث عن سيارة أو قطعة..." oninput="renderCars()">
+</div>
+</header>
+
+<!-- HOME -->
+<section id="home" class="page active">
+<div class="pad">
+<h1>عالم السيارات بين يديك 🚘</h1>
+<p class="muted">بيع • شراء • تأجير • قطع غيار • نقل عالمي</p>
+
+<div class="grid">
+<div class="service s1" onclick="page('cars')">
+<span class="emoji">🚗</span><b>بيع السيارات</b><small>شراء وبيع السيارات</small>
+</div>
+<div class="service s2" onclick="page('rental')">
+<span class="emoji">🔑</span><b>تأجير السيارات</b><small>سيارات للإيجار</small>
+</div>
+<div class="service s3" onclick="page('parts')">
+<span class="emoji">🔧</span><b>قطع السيارات</b><small>قطع وإكسسوارات</small>
+</div>
+<div class="service s4" onclick="page('transport')">
+<span class="emoji">🌍</span><b>نقل السيارات</b><small>من دولة إلى دولة</small>
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="title"><h2>آخر السيارات</h2><button onclick="page('cars')">عرض الكل</button></div>
+<div id="homeCars" class="cards"></div>
+</div>
+</section>
+
+<!-- CARS -->
+<section id="cars" class="page">
+<div class="pad">
+<h1>🚗 السيارات</h1>
+<p class="muted">جميع السيارات المعروضة</p>
+<button class="btn" onclick="page('sell')">＋ أضف سيارتك للبيع</button>
+</div>
+<div id="carList" class="list"></div>
+</section>
+
+<!-- SELL -->
+<section id="sell" class="page">
+<div class="pad">
+<h1>📢 أضف سيارة</h1>
+<p class="muted">أدخل معلومات السيارة</p>
+
+<div class="field"><label>ماركة السيارة</label><input id="brand" placeholder="Mercedes"></div>
+<div class="field"><label>الموديل</label><input id="model" placeholder="GLE"></div>
+<div class="field"><label>السنة</label><input id="year" type="number" placeholder="2024"></div>
+<div class="field"><label>السعر بالدولار</label><input id="price" type="number" placeholder="50000"></div>
+<div class="field"><label>الممشى</label><input id="km" placeholder="25000 km"></div>
+<div class="field"><label>الدولة</label><input id="country" placeholder="ألمانيا"></div>
+<div class="field"><label>صورة السيارة</label><input id="image" type="file" accept="image/*"></div>
+<div class="field"><label>الوصف</label><textarea id="desc" placeholder="اكتب تفاصيل السيارة..."></textarea></div>
+
+<button class="btn" onclick="addCar()">🚀 نشر الإعلان</button>
+</div>
+</section>
+
+<!-- RENTAL -->
+<section id="rental" class="page">
+<div class="pad">
+<h1>🔑 تأجير السيارات</h1>
+<p class="muted">ابحث عن سيارة للإيجار</p>
+<div class="field"><label>مكان الاستلام</label><input placeholder="المدينة أو المطار"></div>
+<div class="field"><label>من</label><input type="date"></div>
+<div class="field"><label>إلى</label><input type="date"></div>
+<button class="btn" onclick="toast('تم البحث عن السيارات المتاحة 🔎')">بحث</button>
+</div>
+
+<div class="list">
+<div class="item"><div class="thumb">🚘</div><div class="info"><h3>Mercedes E-Class</h3><p>أوتوماتيك • فاخرة</p><div class="price">$75 / يوم</div></div></div>
+<div class="item"><div class="thumb">🚙</div><div class="info"><h3>BMW 5 Series</h3><p>أوتوماتيك • 2024</p><div class="price">$65 / يوم</div></div></div>
+</div>
+</section>
+
+<!-- PARTS -->
+<section id="parts" class="page">
+<div class="pad">
+<h1>🔧 قطع السيارات</h1>
+<p class="muted">ابحث عن قطع الغيار</p>
+<div class="field"><input id="partSearch" placeholder="اسم القطعة..." oninput="renderParts()"></div>
+<button class="btn" onclick="toast('صفحة إضافة قطعة جاهزة للربط بقاعدة البيانات')">＋ بيع قطعة</button>
+</div>
+<div id="partsList" class="list"></div>
+</section>
+
+<!-- TRANSPORT -->
+<section id="transport" class="page">
+<div class="pad">
+<h1>🌍 نقل السيارات</h1>
+<p class="muted">اطلب نقل سيارتك إلى أي مكان</p>
+
+<div class="field"><label>مكان السيارة</label><input id="from" placeholder="الدولة والمدينة"></div>
+<div class="field"><label>مكان التسليم</label><input id="to" placeholder="الدولة والمدينة"></div>
+<div class="field"><label>نوع السيارة</label>
+<select><option>سيارة</option><option>SUV</option><option>شاحنة</option><option>سيارة فاخرة</option></select>
+</div>
+<div class="field"><label>طريقة النقل</label>
+<select><option>بري 🚚</option><option>بحري 🚢</option><option>جوي ✈️</option></select>
+</div>
+
+<button class="btn" onclick="transport()">طلب عرض سعر</button>
+</div>
+</section>
+
+<!-- ACCOUNT -->
+<section id="account" class="page">
+<div class="profile">
+<div class="avatar">👤</div>
+<h2 id="userName">زائر</h2>
+<p class="muted">حساب AutoWorld</p>
+<button class="btn" onclick="login()">تسجيل الدخول / إنشاء حساب</button>
+</div>
+
+<div class="menu">
+<button onclick="myCars()">🚗 إعلاناتي</button>
+<button onclick="showFavorites()">❤️ المفضلة</button>
+<button onclick="toast('لا توجد رسائل جديدة')">💬 الرسائل</button>
+<button onclick="toast('لا توجد طلبات جديدة')">📦 طلباتي</button>
+<button onclick="toast('لا توجد إشعارات جديدة')">🔔 الإشعارات</button>
+<button onclick="toast('الإعدادات قيد التطوير')">⚙️ الإعدادات</button>
+</div>
+</section>
+
+<nav class="bottom">
+<div class="nav active" data-p="home" onclick="page('home')"><div>⌂</div>الرئيسية</div>
+<div class="nav" data-p="cars" onclick="page('cars')"><div>🚘</div>السيارات</div>
+<div class="nav" data-p="parts" onclick="page('parts')"><div>🔧</div>القطع</div>
+<div class="nav" data-p="transport" onclick="page('transport')"><div>🌍</div>النقل</div>
+<div class="nav" data-p="account" onclick="page('account')"><div>👤</div>حسابي</div>
+</nav>
+
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+let cars=JSON.parse(localStorage.getItem("aw_cars")||"[]");
+let fav=JSON.parse(localStorage.getItem("aw_fav")||"[]");
+let user=localStorage.getItem("aw_user")||"";
+
+const parts=[
+{name:"فلتر زيت أصلي",price:25,desc:"قطعة جديدة"},
+{name:"بطارية سيارة",price:120,desc:"12V جديدة"},
+{name:"إطار Michelin",price:180,desc:"إطار جديد"},
+{name:"فحمات فرامل",price:60,desc:"جديدة"}
+];
+
+function page(id){
+document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+document.querySelectorAll(".nav").forEach(x=>{
+x.classList.toggle("active",x.dataset.p===id)
+});
+window.scrollTo(0,0);
+}
+
+function toast(t){
+let x=document.getElementById("toast");
+x.textContent=t;x.classList.add("show");
+setTimeout(()=>x.classList.remove("show"),2500);
+}
+
+function save(){
+localStorage.setItem("aw_cars",JSON.stringify(cars));
+localStorage.setItem("aw_fav",JSON.stringify(fav));
+}
+
+function renderCars(){
+let q=(document.getElementById("search")?.value||"").toLowerCase();
+let list=cars.filter(c=>
+(c.brand+" "+c.model+" "+c.country).toLowerCase().includes(q)
+);
+
+let html="";
+
+if(!list.length){
+html=`<div class="pad"><p class="muted">لا توجد سيارات حالياً. أضف أول سيارة 🚗</p></div>`;
+}else{
+list.forEach((c,i)=>{
+let liked=fav.includes(c.id);
+html+=`
+<div class="item">
+<div class="thumb">${c.image?`<img src="${c.image}">`:"🚗"}</div>
+<div class="info">
+<h3>${c.brand} ${c.model}</h3>
+<p>${c.year} • ${c.km||"غير محدد"} • ${c.country}</p>
+<div class="price">$${Number(c.price).toLocaleString()}</div>
+</div>
+<button class="heart" onclick="favorite('${c.id}')">${liked?"❤️":"♡"}</button>
+</div>`;
+});
+}
+
+document.getElementById("carList").innerHTML=html;
+document.getElementById("homeCars").innerHTML=list.slice(0,5).map(c=>`
+<div class="card">
+<div class="photo">${c.image?`<img src="${c.image}">`:"🚘"}</div>
+<div class="cardbody">
+<h3>${c.brand} ${c.model}</h3>
+<p class="muted">${c.year} • ${c.country}</p>
+<div class="price">$${Number(c.price).toLocaleString()}</div>
+</div></div>`).join("");
+}
+
+function addCar(){
+if(!user){
+toast("سجّل حساب أولاً 👤");
+setTimeout(()=>login(),700);
+return;
+}
+
+let brand=document.getElementById("brand").value.trim();
+let model=document.getElementById("model").value.trim();
+let price=document.getElementById("price").value.trim();
+
+if(!brand||!model||!price){
+toast("أدخل الماركة والموديل والسعر");
+return;
+}
+
+let file=document.getElementById("image").files[0];
+
+function finish(image=""){
+let c={
+id:Date.now().toString(),
+brand,
+model,
+year:document.getElementById("year").value,
+price,
+km:document.getElementById("km").value,
+country:document.getElementById("country").value,
+desc:document.getElementById("desc").value,
+image,
+owner:user
+};
+
+cars.unshift(c);
+save();
+renderCars();
+toast("تم نشر إعلانك بنجاح 🚗");
+page("cars");
+}
+
+if(file){
+let reader=new FileReader();
+reader.onload=e=>finish(e.target.result);
+reader.readAsDataURL(file);
+}else finish();
+}
+
+function favorite(id){
+if(fav.includes(id)) fav=fav.filter(x=>x!==id);
+else fav.push(id);
+save();renderCars();
+toast(fav.includes(id)?"أضيفت للمفضلة ❤️":"أزيلت من المفضلة");
+}
+
+function login(){
+let n=prompt("اكتب اسمك");
+if(!n)return;
+user=n;
+localStorage.setItem("aw_user",user);
+document.getElementById("userName").textContent=user;
+toast("تم تسجيل الدخول 👤");
+}
+
+function myCars(){
+if(!user){
+toast("سجّل الدخول أولاً");
+return;
+}
+
+let mine=cars.filter(c=>c.owner===user);
+
+if(!mine.length){
+toast("ليس لديك إعلانات بعد");
+page("sell");
+return;
+}
+
+document.getElementById("search").value="";
+page("cars");
+
+document.getElementById("carList").innerHTML=mine.map(c=>`
+<div class="item">
+<div class="thumb">${c.image?`<img src="${c.image}">`:"🚗"}</div>
+<div class="info">
+<h3>${c.brand} ${c.model}</h3>
+<p>${c.year} • ${c.country}</p>
+<div class="price">$${Number(c.price).toLocaleString()}</div>
+</div>
+</div>`).join("");
+}
+
+function showFavorites(){
+let list=cars.filter(c=>fav.includes(c.id));
+
+page("cars");
+
+if(!list.length){
+document.getElementById("carList").innerHTML=
+`<div class="pad"><p class="muted">لا توجد سيارات في المفضلة ❤️</p></div>`;
+return;
+}
+
+document.getElementById("carList").innerHTML=list.map(c=>`
+<div class="item">
+<div class="thumb">${c.image?`<img src="${c.image}">`:"🚗"}</div>
+<div class="info">
+<h3>${c.brand} ${c.model}</h3>
+<p>${c.year} • ${c.country}</p>
+<div class="price">$${Number(c.price).toLocaleString()}</div>
+</div>
+</div>`).join("");
+}
+
+function renderParts(){
+let q=(document.getElementById("partSearch")?.value||"").toLowerCase();
+let list=parts.filter(x=>x.name.toLowerCase().includes(q));
+
+document.getElementById("partsList").innerHTML=list.map(x=>`
+<div class="item">
+<div class="thumb">🔧</div>
+<div class="info">
+<h3>${x.name}</h3>
+<p>${x.desc}</p>
+<div class="price">$${x.price}</div>
+</div>
+</div>`).join("");
+}
+
+function transport(){
+let from=document.getElementById("from").value;
+let to=document.getElementById("to").value;
+
+if(!from||!to){
+toast("أدخل مكان السيارة والتسليم");
+return;
+}
+
+toast("تم إرسال طلب النقل 🌍");
+}
+
+if(user)document.getElementById("userName").textContent=user;
+
+renderCars();
+renderParts();
+</script>
+
+</body>
+</html>

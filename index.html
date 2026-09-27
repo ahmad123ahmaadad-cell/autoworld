@@ -4,616 +4,150 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lamar Cars - سيارات لمار</title>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --primary-color: #e50914;
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --text-color: #ffffff;
-            --text-secondary: #aaaaaa;
-            --success-color: #28a745;
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Tahoma, sans-serif; }
+        body { background-color: #0b0b0b; color: #fff; direction: rtl; }
+        
+        /* شاشة الترحيب */
+        #splashScreen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 9999;
+            transition: opacity 0.5s ease;
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        .splash-img {
+            width: 150px; height: 150px; border-radius: 50%;
+            border: 3px solid #ff0000; object-fit: cover;
+            box-shadow: 0 0 20px rgba(255,0,0,0.6); margin-bottom: 20px;
         }
+        #splashScreen h1 { font-size: 28px; margin-bottom: 5px; color: #fff; }
+        #splashScreen p { font-size: 14px; color: #ff3333; }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            padding-bottom: 75px;
-        }
+        /* الواجهة الرئيسية */
+        #appContent { display: none; padding: 20px; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .lang-btns button { background: #222; color: #fff; border: 1px solid #444; padding: 5px 10px; cursor: pointer; border-radius: 5px; }
+        
+        .section-title { font-size: 20px; margin: 20px 0 10px; color: #ff3333; border-right: 4px solid #ff3333; padding-right: 8px; }
+        
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; }
+        .card { background: #161616; border: 1px solid #222; border-radius: 10px; padding: 15px; text-align: center; cursor: pointer; transition: 0.3s; }
+        .card:hover { border-color: #ff3333; background: #1f1f1f; }
+        .card h3 { font-size: 16px; margin-bottom: 8px; }
+        .card p { font-size: 12px; color: #aaa; }
 
-        /* 🏎️ الشاشة الترحيبية (Splash Screen) */
-        .splash-screen {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: #000000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            transition: opacity 0.8s ease, visibility 0.8s;
-        }
-
-        .splash-screen img {
-            width: 160px;
-            height: 160px;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 3px solid var(--primary-color);
-            box-shadow: 0 0 25px rgba(229, 9, 20, 0.6);
-            margin-bottom: 20px;
-            animation: pulse 2s infinite;
-        }
-
-        .splash-screen h1 {
-            color: #ffffff;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .splash-screen p {
-            color: var(--primary-color);
-            font-size: 14px;
-            margin-top: 5px;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        /* Modal / Login Overlay */
-        .auth-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .auth-card {
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-            border: 1px solid #333;
-        }
-
-        .auth-card h2 {
-            margin-bottom: 10px;
-            color: var(--primary-color);
-            font-size: 24px;
-        }
-
-        .btn-auth {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: none;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .btn-google { background: #ffffff; color: #333; }
-        .btn-phone { background: #25d366; color: #fff; }
-        .btn-guest { background: transparent; color: var(--text-secondary); border: 1px solid var(--text-secondary); }
-
-        /* App Header */
-        header {
-            background: #000;
-            padding: 12px 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid #222;
-        }
-
-        .logo {
-            font-size: 18px;
-            font-weight: bold;
-            color: var(--primary-color);
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .lang-select {
-            background: #222;
-            color: #fff;
-            border: 1px solid #444;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 12px;
-            cursor: pointer;
-        }
-
-        /* Navigation Tabs */
-        .tab-content {
-            display: none;
-            padding: 15px;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Cards & Forms */
-        .card {
-            background: var(--card-bg);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #2a2a2a;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-            text-align: right;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: var(--text-secondary);
-            font-size: 13px;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #333;
-            background: #2b2b2b;
-            color: #fff;
-            font-size: 14px;
-        }
-
-        .btn-submit {
-            width: 100%;
-            padding: 12px;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 5px;
-        }
-
-        .btn-action {
-            background: var(--success-color);
-            margin-bottom: 15px;
-        }
-
-        .sub-nav {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .sub-btn {
-            flex: 1;
-            padding: 10px;
-            background: #222;
-            color: #aaa;
-            border: 1px solid #333;
-            border-radius: 8px;
-            cursor: pointer;
-            text-align: center;
-            font-size: 13px;
-        }
-
-        .sub-btn.active {
-            background: var(--primary-color);
-            color: #fff;
-            border-color: var(--primary-color);
-        }
-
-        /* Bottom Nav */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 65px;
-            background: #000;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            border-top: 1px solid #222;
-            z-index: 99;
-        }
-
-        .nav-item {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            cursor: pointer;
-        }
-
-        .nav-item.active {
-            color: var(--primary-color);
-        }
-
-        .nav-item i {
-            font-size: 17px;
-        }
+        select { width: 100%; padding: 10px; background: #161616; color: #fff; border: 1px solid #444; border-radius: 5px; margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
-    <!-- 🏎️ الشاشة الترحيبية -->
-    <div id="splashScreen" class="splash-screen">
-        <img src="https://images.unsplash.com/photo-1617814076367-b759c7d7e738?q=80&w=600&auto=format&fit=crop" alt="Lamar Cars">
+    <!-- شاشة الترحيب -->
+    <div id="splashScreen">
+        <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=500" alt="Lamar Cars" class="splash-img">
         <h1>Lamar Cars</h1>
         <p>سيارات لمار - سوق السيارات العالمي</p>
     </div>
 
-    <!-- 🔒 شاشة تسجيل الدخول -->
-    <div id="authModal" class="auth-overlay">
-        <div class="auth-card">
+    <!-- التطبيق الرئيسي -->
+    <div id="appContent">
+        <header>
             <h2>Lamar Cars</h2>
-            <p style="margin-bottom:20px; color:#ccc; font-size: 14px;">مرحباً بك! اختر وسيلة الدخول</p>
-            
-            <button class="btn-auth btn-google" onclick="loginWithGoogle()">
-                <i class="fab fa-google"></i> تسجيل الدخول بحساب Google
-            </button>
+            <div class="lang-btns">
+                <button onclick="changeLanguage('ar')">العربية</button>
+                <button onclick="changeLanguage('en')">English</button>
+            </div>
+        </header>
 
-            <button class="btn-auth btn-phone" onclick="loginWithPhone()">
-                <i class="fas fa-phone"></i> الدخول عبر رقم الهاتف
-            </button>
+        <!-- اختيار الدولة -->
+        <label id="countryLabel">اختر الدولة:</label>
+        <select id="countrySelect">
+            <option value="all">جميع الدول / All Countries</option>
+            <option value="kr">كوريا / Korea</option>
+            <option value="de">ألمانيا / Germany</option>
+            <option value="sy">سوريا / Syria</option>
+            <option value="ae">الإمارات / UAE</option>
+            <option value="sa">السعودية / Saudi Arabia</option>
+            <option value="lb">لبنان / Lebanon</option>
+            <option value="jo">الأردن / Jordan</option>
+            <option value="om">عمان / Oman</option>
+        </select>
 
-            <button class="btn-auth btn-guest" onclick="closeAuth()">
-                المتابعة كزائر
-            </button>
+        <!-- الأقسام الرئيسية -->
+        <div class="section-title" id="secParts">قطع السيارات (عرض وطلب)</div>
+        <div class="grid-container">
+            <div class="card"><h3 id="txtBuyPart">طلب قطعة</h3><p>ابحث واطلب قطعتك</p></div>
+            <div class="card"><h3 id="txtSellPart">عرض قطعة</h3><p>اعرض قطع للبيع</p></div>
+        </div>
+
+        <div class="section-title" id="secCars">بيع وشراء السيارات</div>
+        <div class="grid-container">
+            <div class="card"><h3 id="txtBuyCar">شراء سيارة</h3><p>تصفح واطلب سيارتك</p></div>
+            <div class="card"><h3 id="txtSellCar">بيع سيارة</h3><p>اعرض سيارتك للسوق</p></div>
+        </div>
+
+        <div class="section-title" id="secRent">إيجار السيارات</div>
+        <div class="grid-container">
+            <div class="card"><h3 id="txtRentReq">طلب إيجار</h3><p>استأجر سيارة בקלות</p></div>
+            <div class="card"><h3 id="txtRentOff">عرض للتعشير</h3><p>أجر سيارتك الآن</p></div>
+        </div>
+
+        <div class="section-title" id="secShip">نقل السيارات الدولي</div>
+        <div class="grid-container">
+            <div class="card" style="grid-column: span 2;">
+                <h3 id="txtShipTitle">شحن باب البيت</h3>
+                <p id="txtShipDesc">نقل السيارات من كوريا، ألمانيا، وجميع دول العالم حتى باب منزلك بكل امن وسرعة.</p>
+            </div>
         </div>
     </div>
-
-    <!-- 🟢 أعلى التطبيق -->
-    <header>
-        <div class="logo"><i class="fas fa-car"></i> Lamar Cars</div>
-        <div class="header-actions">
-            <!-- 🌐 اختيار اللغة -->
-            <select class="lang-select" onchange="changeLanguage(this.value)">
-                <option value="ar">العربية 🇸🇦</option>
-                <option value="en">English 🇺🇸</option>
-                <option value="fr">Français 🇫🇷</option>
-                <option value="tr">Türkçe 🇹🇷</option>
-            </select>
-            <div id="userInfo" style="font-size: 11px; color: #aaa;">زائر</div>
-        </div>
-    </header>
-
-    <!-- 1️⃣ قسم بيع وشراء السيارات -->
-    <div id="tab-buy-sell" class="tab-content active">
-        <h3><i class="fas fa-car"></i> بيع وشراء السيارات</h3>
-        <p style="color:var(--text-secondary); font-size: 12px; margin-bottom: 15px;">تصفح السيارات المعروضة للبيع أو اعرض سيارتك مع إمكانية تحديد الدولة.</p>
-        
-        <button class="btn-submit btn-action" onclick="switchTab('tab-add-sale')">
-            <i class="fas fa-plus-circle"></i> عرض سيارة للبيع
-        </button>
-
-        <div class="form-group">
-            <select class="form-control" style="margin-bottom:8px;">
-                <option value="">🌍 جميع دول العالم</option>
-                <option value="SY">سوريا</option>
-                <option value="SA">المملكة العربية السعودية</option>
-                <option value="AE">الإمارات العربية المتحدة</option>
-                <option value="EG">مصر</option>
-                <option value="IQ">العراق</option>
-                <option value="JO">الأردن</option>
-           <option value=" /كوريا 
-                <option value="TR">تركيا</option>
-                <option value="DE">ألمانيا</option>
-                <option value="US">الولايات المتحدة</option>
-            </select>
-            <input type="text" class="form-control" placeholder="ابحث عن ماركة، موديل، سنة التصنيع...">
-        </div>
-
-        <div class="card">
-            <h4>Mercedes-Benz E300 - 2022</h4>
-            <p style="color:var(--text-secondary); font-size:12px;">🇸🇦 السعودية - الرياض • ماشية 35,000 كم</p>
-            <p style="color:var(--primary-color); font-weight:bold; margin-top:5px;">$48,000</p>
-        </div>
-
-        <div class="card">
-            <h4>Toyota Camry - 2021</h4>
-            <p style="color:var(--text-secondary); font-size:12px;">🇦🇪 الإمارات - دبي • ممتازة خالية من الحوادث</p>
-            <p style="color:var(--primary-color); font-weight:bold; margin-top:5px;">$21,500</p>
-        </div>
-    </div>
-
-    <!-- 2️⃣ قسم قطع الغيار (تصفح / نشر / طلب) -->
-    <div id="tab-parts" class="tab-content">
-        <h3><i class="fas fa-wrench"></i> قطع غيار السيارات</h3>
-        <p style="color:var(--text-secondary); font-size: 12px; margin-bottom: 15px;">طلب أو عرض قطع غيار جديدة ومستعملة.</p>
-        
-        <button class="btn-submit btn-action" onclick="switchTab('tab-add-part')">
-            <i class="fas fa-plus-circle"></i> نشر قطعة للبيع أو طلب قطعة
-        </button>
-
-        <div class="form-group">
-            <input type="text" class="form-control" placeholder="ابحث عن محرك، قطع هيكل، فلاتر...">
-        </div>
-
-        <div class="card">
-            <h4>محرك مرسيدس C200 موديل 2020</h4>
-            <p style="color:var(--text-secondary); font-size:12px;">مستعمل نظيف • ضمان شهر</p>
-            <p style="color:var(--primary-color); font-weight:bold; margin-top:5px;">$1,200</p>
-        </div>
-    </div>
-
-    <!-- 3️⃣ قسم تأجير السيارات -->
-    <div id="tab-rent" class="tab-content">
-        <h3><i class="fas fa-key"></i> تأجير واستئجار السيارات</h3>
-        <p style="color:var(--text-secondary); font-size: 12px; margin-bottom: 15px;">استأجر سيارة أو انشر سيارتك للإيجار.</p>
-
-        <button class="btn-submit btn-action" onclick="switchTab('tab-add-car')">
-            <i class="fas fa-car"></i> عرض سيارتك للإيجار
-        </button>
-
-        <div class="card">
-            <h4>BMW Series 5 - 2023</h4>
-            <p style="color:var(--text-secondary); font-size:12px;">أوتوماتيك • دبي</p>
-            <p style="color:var(--primary-color); font-weight:bold; margin-top:5px;">$85 / اليوم</p>
-        </div>
-    </div>
-
-    <!-- 4️⃣ قسم النقل الدولي -->
-    <div id="tab-transport" class="tab-content">
-        <h3><i class="fas fa-globe"></i> شحن ونقل السيارات حول العالم</h3>
-        <p style="color:var(--text-secondary); font-size: 12px; margin-bottom: 15px;">شحن سيارتك لأي دولة أو إضافة خدمات الناقلات الخاص بك.</p>
-
-        <div class="sub-nav">
-            <div id="btn-trans-request" class="sub-btn active" onclick="toggleTransportMode('request')">أريد شحن سيارة</div>
-            <div id="btn-trans-offer" class="sub-btn" onclick="toggleTransportMode('offer')">أنا صاحب ناقلة / شحن</div>
-        </div>
-
-        <!-- نموذج طلب شحن -->
-        <form id="form-trans-request" onsubmit="event.preventDefault(); alert('تم استلام طلب الشحن!');">
-            <div class="form-group">
-                <label>مكان الاستلام (الدولة والمدينة):</label>
-                <input type="text" class="form-control" placeholder="مثال: الإمارات - دبي" required>
-            </div>
-            <div class="form-group">
-                <label>مكان التسليم (الوجهة لأي دولة بالعالم):</label>
-                <input type="text" class="form-control" placeholder="مثال: ألمانيا - برلين" required>
-            </div>
-            <div class="form-group">
-                <label>نوع السيارة والموديل:</label>
-                <input type="text" class="form-control" placeholder="مثال: تويوتا كامري 2022" required>
-            </div>
-            <button type="submit" class="btn-submit">إرسال طلب الشحن</button>
-        </form>
-
-        <!-- نموذج عرض خدمات ناقلة -->
-        <form id="form-trans-offer" style="display:none;" onsubmit="event.preventDefault(); alert('تم نشر خدمة الناقلة بنجاح!');">
-            <div class="form-group">
-                <label>خط سير الناقلة (من - إلى):</label>
-                <input type="text" class="form-control" placeholder="مثال: من السعودية إلى جميع دول الخليج" required>
-            </div>
-            <div class="form-group">
-                <label>نوع الناقلة / الشحن:</label>
-                <select class="form-control">
-                    <option>شحن بري (سطحة / سطحات هيدروليك / تريلا)</option>
-                    <option>شحن بحري (حاويات مغلقة)</option>
-                    <option>شحن جوي سريع</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>رقم التواصل والواتساب:</label>
-                <input type="tel" class="form-control" placeholder="+963..." required>
-            </div>
-            <button type="submit" class="btn-submit" style="background:var(--success-color);">نشر الرحلة / الناقلة</button>
-        </form>
-    </div>
-
-    <!-- ➕ صفحة إضافة سيارة للبيع -->
-    <div id="tab-add-sale" class="tab-content">
-        <h3><i class="fas fa-tag"></i> إضافة سيارة للبيع</h3>
-        <form onsubmit="event.preventDefault(); alert('تم نشر إعلان السيارة بنجاح!'); switchTab('tab-buy-sell');">
-            <div class="form-group">
-                <label>عنوان الإعلان والنوع:</label>
-                <input type="text" class="form-control" placeholder="مثال: تويوتا كورولا موديل 2020 بحالة ممتازة" required>
-            </div>
-            <div class="form-group">
-                <label>الدولة:</label>
-                <select class="form-control" required>
-                    <option value="">اختر الدولة</option>
-                    <option>سوريا</option><option>السعودية</option><option>الإمارات</option><option>مصر</option><option>الكويت</option><option>قطر</option><option>تركيا</option><option>ألمانيا</option><option>دولة أخرى</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>السعر المطلوب (USD):</label>
-                <input type="number" class="form-control" placeholder="مثال: 15000" required>
-            </div>
-            <div class="form-group">
-                <label>رقم الواتساب مع رمز الدولة:</label>
-                <input type="tel" class="form-control" placeholder="+963..." required>
-            </div>
-            <button type="submit" class="btn-submit">نشر السيارة للبيع</button>
-        </form>
-    </div>
-
-    <!-- ➕ صفحة إضافة قطعة غيار -->
-    <div id="tab-add-part" class="tab-content">
-        <h3><i class="fas fa-plus-circle"></i> نشر / طلب قطعة غيار</h3>
-        <form onsubmit="event.preventDefault(); alert('تم نشر الطلب/القطعة بنجاح!'); switchTab('tab-parts');">
-            <div class="form-group">
-                <label>نوع الإعلان:</label>
-                <select class="form-control">
-                    <option>عندي قطعة وأريد بيعها</option>
-                    <option>أبحث عن قطعة وأريد شراءها</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>اسم القطعة ونوع السيارة:</label>
-                <input type="text" class="form-control" placeholder="مثال: كمبروسر مكيف هيونداي النترا 2018" required>
-            </div>
-            <div class="form-group">
-                <label>السعر (اختياري):</label>
-                <input type="text" class="form-control" placeholder="مثال: $150">
-            </div>
-            <div class="form-group">
-                <label>رقم التواصل:</label>
-                <input type="tel" class="form-control" placeholder="+963..." required>
-            </div>
-            <button type="submit" class="btn-submit">نشر الآن</button>
-        </form>
-    </div>
-
-    <!-- ➕ صفحة إضافة سيارة للإيجار -->
-    <div id="tab-add-car" class="tab-content">
-        <h3><i class="fas fa-car-side"></i> عرض سيارتك للإيجار</h3>
-        <form onsubmit="event.preventDefault(); alert('تم نشر سيارتك للإيجار بنجاح!'); switchTab('tab-rent');">
-            <div class="form-group">
-                <label>اسم ونوع السيارة:</label>
-                <input type="text" class="form-control" placeholder="مثال: كيا سيراتو 2021" required>
-            </div>
-            <div class="form-group">
-                <label>المدينة والدولة:</label>
-                <input type="text" class="form-control" placeholder="مثال: دمشق، سوريا" required>
-            </div>
-            <div class="form-group">
-                <label>السعر اليومي (USD):</label>
-                <input type="number" class="form-control" placeholder="مثال: 40" required>
-            </div>
-            <div class="form-group">
-                <label>رقم الواتساب:</label>
-                <input type="tel" class="form-control" placeholder="+963..." required>
-            </div>
-            <button type="submit" class="btn-submit">نشر السيارة للإيجار</button>
-        </form>
-    </div>
-
-    <!-- 👤 صفحة حسابي -->
-    <div id="tab-profile" class="tab-content">
-        <h3><i class="fas fa-user-circle"></i> حسابي</h3>
-        <div class="card" style="text-align:center; padding:30px 15px;">
-            <i class="fas fa-user-circle" style="font-size:60px; color:var(--text-secondary);"></i>
-            <h4 id="profileName" style="margin-top:10px;">زائر</h4>
-            <button class="btn-submit" style="margin-top:20px;" onclick="document.getElementById('authModal').style.display='flex'">تسجيل الدخول / حساب جديد</button>
-        </div>
-    </div>
-
-    <!-- 📱 شريط التنقل السفلي -->
-    <nav class="bottom-nav">
-        <div class="nav-item active" onclick="switchTab('tab-buy-sell')">
-            <i class="fas fa-car"></i>
-            <span>بيع وشراء</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('tab-parts')">
-            <i class="fas fa-wrench"></i>
-            <span>القطع</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('tab-rent')">
-            <i class="fas fa-key"></i>
-            <span>الإيجار</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('tab-transport')">
-            <i class="fas fa-globe"></i>
-            <span>شحن دولي</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('tab-profile')">
-            <i class="fas fa-user"></i>
-            <span>حسابي</span>
-        </div>
-    </nav>
 
     <script>
-        // إخفاء Splash Screen تلقائياً
-        window.addEventListener('DOMContentLoaded', () => {
+        // إخفاء شاشة الترحيب تلقائياً بعد ثانيتين ودخول التطبيق بسلاسة
+        window.addEventListener('load', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splashScreen');
+                const app = document.getElementById('appContent');
                 splash.style.opacity = '0';
-                splash.style.visibility = 'hidden';
-            }, 2000);
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                    app.style.display = 'block';
+                }, 500);
+            }, 2000); // مدة عرض شاشة الترحيب ثانيتان
         });
 
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            
-            const targetTab = document.getElementById(tabId);
-            if(targetTab) targetTab.classList.add('active');
-        }
-
-        function toggleTransportMode(mode) {
-            if (mode === 'request') {
-                document.getElementById('form-trans-request').style.display = 'block';
-                document.getElementById('form-trans-offer').style.display = 'none';
-                document.getElementById('btn-trans-request').classList.add('active');
-                document.getElementById('btn-trans-offer').classList.remove('active');
-            } else {
-                document.getElementById('form-trans-request').style.display = 'none';
-                document.getElementById('form-trans-offer').style.display = 'block';
-                document.getElementById('btn-trans-offer').classList.add('active');
-                document.getElementById('btn-trans-request').classList.remove('active');
-            }
-        }
-
+        // دالة تغيير اللغة البسيطة
         function changeLanguage(lang) {
             if (lang === 'en') {
                 document.documentElement.dir = 'ltr';
-                alert("Language changed to English");
-            } else if (lang === 'ar') {
-                document.documentElement.dir = 'rtl';
-                alert("تم تغيير اللغة إلى العربية");
+                document.getElementById('countryLabel').innerText = 'Select Country:';
+                document.getElementById('secParts').innerText = 'Auto Parts (Buy & Sell)';
+                document.getElementById('txtBuyPart').innerText = 'Request Part';
+                document.getElementById('txtSellPart').innerText = 'Offer Part';
+                document.getElementById('secCars').innerText = 'Car Trading';
+                document.getElementById('txtBuyCar').innerText = 'Buy Car';
+                document.getElementById('txtSellCar').innerText = 'Sell Car';
+                document.getElementById('secRent').innerText = 'Car Rental';
+                document.getElementById('txtRentReq').innerText = 'Rent Request';
+                document.getElementById('txtRentOff').innerText = 'Offer Rental';
+                document.getElementById('secShip').innerText = 'International Car Shipping';
+                document.getElementById('txtShipTitle').innerText = 'Door-to-Door Shipping';
+                document.getElementById('txtShipDesc').innerText = 'Shipping cars from Korea, Germany, and worldwide safely to your doorstep.';
             } else {
-                alert("Language selected: " + lang);
+                document.documentElement.dir = 'rtl';
+                document.getElementById('countryLabel').innerText = 'اختر الدولة:';
+                document.getElementById('secParts').innerText = 'قطع السيارات (عرض وطلب)';
+                document.getElementById('txtBuyPart').innerText = 'طلب قطعة';
+                document.getElementById('txtSellPart').innerText = 'عرض قطعة';
+                document.getElementById('secCars').innerText = 'بيع وشراء السيارات';
+                document.getElementById('txtBuyCar').innerText = 'شراء سيارة';
+                document.getElementById('txtSellCar').innerText = 'بيع سيارة';
+                document.getElementById('secRent').innerText = 'إيجار السيارات';
+                document.getElementById('txtRentReq').innerText = 'طلب إيجار';
+                document.getElementById('txtRentOff').innerText = 'عرض للإيجار';
+                document.getElementById('secShip').innerText = 'نقل السيارات الدولي';
+                document.getElementById('txtShipTitle').innerText = 'شحن باب البيت';
+                document.getElementById('txtShipDesc').innerText = 'نقل السيارات من كوريا، ألمانيا، وجميع دول العالم حتى باب منزلك بكل أمان وسرعة.';
             }
         }
-
-        function closeAuth() {
-            document.getElementById('authModal').style.display = 'none';
-        }
-  window.loginWithGoogle = function() {
-  const provider = new window.firebase.auth.GoogleAuthProvider();
-  window.firebase.auth().signInWithPopup(provider)
-    .then((result) => {
-      const user = result.user;
-      if(document.getElementById("userName")) {
-        document.getElementById("userName").textContent = user.displayName;
-      }
-      const loginModal = document.getElementById("authModal");
-      if(loginModal) { 
-        loginModal.style.display = "none"; 
-      }
-    })
-    .catch((error) => {
-      console.error("خطأ في تسجيل الدخول: ", error.message);
-    });
-};
-        
-            
+    </script>
+</body>
+</html>

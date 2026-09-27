@@ -43,8 +43,8 @@
         }
 
         .splash-screen img {
-            width: 180px;
-            height: 180px;
+            width: 160px;
+            height: 160px;
             object-fit: cover;
             border-radius: 50%;
             border: 3px solid var(--primary-color);
@@ -57,7 +57,6 @@
             color: #ffffff;
             font-size: 28px;
             font-weight: bold;
-            letter-spacing: 1px;
         }
 
         .splash-screen p {
@@ -122,7 +121,7 @@
         /* App Header */
         header {
             background: #000;
-            padding: 15px;
+            padding: 12px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -133,9 +132,25 @@
         }
 
         .logo {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
             color: var(--primary-color);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .lang-select {
+            background: #222;
+            color: #fff;
+            border: 1px solid #444;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
         }
 
         /* Navigation Tabs */
@@ -197,7 +212,6 @@
             margin-bottom: 15px;
         }
 
-        /* Sub-tabs for Forms */
         .sub-nav {
             display: flex;
             gap: 10px;
@@ -240,7 +254,7 @@
         .nav-item {
             color: var(--text-secondary);
             text-decoration: none;
-            font-size: 11px;
+            font-size: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -253,24 +267,24 @@
         }
 
         .nav-item i {
-            font-size: 18px;
+            font-size: 17px;
         }
     </style>
 </head>
 <body>
 
-    <!-- 🏎️ الشاشة الترحيبية عند فتح التطبيق -->
+    <!-- 🏎️ الشاشة الترحيبية -->
     <div id="splashScreen" class="splash-screen">
         <img src="https://images.unsplash.com/photo-1617814076367-b759c7d7e738?q=80&w=600&auto=format&fit=crop" alt="Lamar Cars">
         <h1>Lamar Cars</h1>
-        <p>سيارات لمار - عالمك التكاملي للسيارات</p>
+        <p>سيارات لمار - سوق السيارات العالمي</p>
     </div>
 
-    <!-- 🔒 شاشة تسجيل الدخول المضمونة -->
+    <!-- 🔒 شاشة تسجيل الدخول -->
     <div id="authModal" class="auth-overlay">
         <div class="auth-card">
             <h2>Lamar Cars</h2>
-            <p style="margin-bottom:20px; color:#ccc; font-size: 14px;">مرحباً بك! يرجى تسجيل الدخول للمتابعة</p>
+            <p style="margin-bottom:20px; color:#ccc; font-size: 14px;">مرحباً بك! اختر وسيلة الدخول</p>
             
             <button class="btn-auth btn-google" onclick="loginWithGoogle()">
                 <i class="fab fa-google"></i> تسجيل الدخول بحساب Google
@@ -289,11 +303,58 @@
     <!-- 🟢 أعلى التطبيق -->
     <header>
         <div class="logo"><i class="fas fa-car"></i> Lamar Cars</div>
-        <div id="userInfo" style="font-size: 12px; color: #aaa;">زائر</div>
+        <div class="header-actions">
+            <!-- 🌐 اختيار اللغة -->
+            <select class="lang-select" onchange="changeLanguage(this.value)">
+                <option value="ar">العربية 🇸🇦</option>
+                <option value="en">English 🇺🇸</option>
+                <option value="fr">Français 🇫🇷</option>
+                <option value="tr">Türkçe 🇹🇷</option>
+            </select>
+            <div id="userInfo" style="font-size: 11px; color: #aaa;">زائر</div>
+        </div>
     </header>
 
-    <!-- 1️⃣ قسم قطع الغيار (تصفح / نشر / طلب) -->
-    <div id="tab-parts" class="tab-content active">
+    <!-- 1️⃣ قسم بيع وشراء السيارات -->
+    <div id="tab-buy-sell" class="tab-content active">
+        <h3><i class="fas fa-car"></i> بيع وشراء السيارات</h3>
+        <p style="color:var(--text-secondary); font-size: 12px; margin-bottom: 15px;">تصفح السيارات المعروضة للبيع أو اعرض سيارتك مع إمكانية تحديد الدولة.</p>
+        
+        <button class="btn-submit btn-action" onclick="switchTab('tab-add-sale')">
+            <i class="fas fa-plus-circle"></i> عرض سيارة للبيع
+        </button>
+
+        <div class="form-group">
+            <select class="form-control" style="margin-bottom:8px;">
+                <option value="">🌍 جميع دول العالم</option>
+                <option value="SY">سوريا</option>
+                <option value="SA">المملكة العربية السعودية</option>
+                <option value="AE">الإمارات العربية المتحدة</option>
+                <option value="EG">مصر</option>
+                <option value="IQ">العراق</option>
+                <option value="JO">الأردن</option>
+                <option value="TR">تركيا</option>
+                <option value="DE">ألمانيا</option>
+                <option value="US">الولايات المتحدة</option>
+            </select>
+            <input type="text" class="form-control" placeholder="ابحث عن ماركة، موديل، سنة التصنيع...">
+        </div>
+
+        <div class="card">
+            <h4>Mercedes-Benz E300 - 2022</h4>
+            <p style="color:var(--text-secondary); font-size:12px;">🇸🇦 السعودية - الرياض • ماشية 35,000 كم</p>
+            <p style="color:var(--primary-color); font-weight:bold; margin-top:5px;">$48,000</p>
+        </div>
+
+        <div class="card">
+            <h4>Toyota Camry - 2021</h4>
+            <p style="color:var(--text-secondary); font-size:12px;">🇦🇪 الإمارات - دبي • ممتازة خالية من الحوادث</p>
+            <p style="color:var(--primary-color); font-weight:bold; margin-top:5px;">$21,500</p>
+        </div>
+    </div>
+
+    <!-- 2️⃣ قسم قطع الغيار (تصفح / نشر / طلب) -->
+    <div id="tab-parts" class="tab-content">
         <h3><i class="fas fa-wrench"></i> قطع غيار السيارات</h3>
         <p style="color:var(--text-secondary); font-size: 12px; margin-bottom: 15px;">طلب أو عرض قطع غيار جديدة ومستعملة.</p>
         
@@ -312,7 +373,7 @@
         </div>
     </div>
 
-    <!-- 2️⃣ قسم تأجير السيارات (طلب / عرض سيارة) -->
+    <!-- 3️⃣ قسم تأجير السيارات -->
     <div id="tab-rent" class="tab-content">
         <h3><i class="fas fa-key"></i> تأجير واستئجار السيارات</h3>
         <p style="color:var(--text-secondary); font-size: 12px; margin-bottom: 15px;">استأجر سيارة أو انشر سيارتك للإيجار.</p>
@@ -328,10 +389,10 @@
         </div>
     </div>
 
-    <!-- 3️⃣ قسم النقل الدولي (شحن سيارة / عرض ناقلة) -->
+    <!-- 4️⃣ قسم النقل الدولي -->
     <div id="tab-transport" class="tab-content">
         <h3><i class="fas fa-globe"></i> شحن ونقل السيارات حول العالم</h3>
-        <p style="color:var(--text-secondary); font-size: 12px; margin-bottom: 15px;">شحن سيارتك لأي دولة أو إضافة خدمات الناقلات الخاصة بك.</p>
+        <p style="color:var(--text-secondary); font-size: 12px; margin-bottom: 15px;">شحن سيارتك لأي دولة أو إضافة خدمات الناقلات الخاص بك.</p>
 
         <div class="sub-nav">
             <div id="btn-trans-request" class="sub-btn active" onclick="toggleTransportMode('request')">أريد شحن سيارة</div>
@@ -339,7 +400,7 @@
         </div>
 
         <!-- نموذج طلب شحن -->
-        <form id="form-trans-request" onsubmit="event.preventDefault(); alert('تم استلام طلب الشحن! وسنصلك بأفضل العروض.');">
+        <form id="form-trans-request" onsubmit="event.preventDefault(); alert('تم استلام طلب الشحن!');">
             <div class="form-group">
                 <label>مكان الاستلام (الدولة والمدينة):</label>
                 <input type="text" class="form-control" placeholder="مثال: الإمارات - دبي" required>
@@ -356,7 +417,7 @@
         </form>
 
         <!-- نموذج عرض خدمات ناقلة -->
-        <form id="form-trans-offer" style="display:none;" onsubmit="event.preventDefault(); alert('تم نشر خدمة الناقلة الخاصة بك بنجاح!');">
+        <form id="form-trans-offer" style="display:none;" onsubmit="event.preventDefault(); alert('تم نشر خدمة الناقلة بنجاح!');">
             <div class="form-group">
                 <label>خط سير الناقلة (من - إلى):</label>
                 <input type="text" class="form-control" placeholder="مثال: من السعودية إلى جميع دول الخليج" required>
@@ -374,6 +435,33 @@
                 <input type="tel" class="form-control" placeholder="+963..." required>
             </div>
             <button type="submit" class="btn-submit" style="background:var(--success-color);">نشر الرحلة / الناقلة</button>
+        </form>
+    </div>
+
+    <!-- ➕ صفحة إضافة سيارة للبيع -->
+    <div id="tab-add-sale" class="tab-content">
+        <h3><i class="fas fa-tag"></i> إضافة سيارة للبيع</h3>
+        <form onsubmit="event.preventDefault(); alert('تم نشر إعلان السيارة بنجاح!'); switchTab('tab-buy-sell');">
+            <div class="form-group">
+                <label>عنوان الإعلان والنوع:</label>
+                <input type="text" class="form-control" placeholder="مثال: تويوتا كورولا موديل 2020 بحالة ممتازة" required>
+            </div>
+            <div class="form-group">
+                <label>الدولة:</label>
+                <select class="form-control" required>
+                    <option value="">اختر الدولة</option>
+                    <option>سوريا</option><option>السعودية</option><option>الإمارات</option><option>مصر</option><option>الكويت</option><option>قطر</option><option>تركيا</option><option>ألمانيا</option><option>دولة أخرى</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>السعر المطلوب (USD):</label>
+                <input type="number" class="form-control" placeholder="مثال: 15000" required>
+            </div>
+            <div class="form-group">
+                <label>رقم الواتساب مع رمز الدولة:</label>
+                <input type="tel" class="form-control" placeholder="+963..." required>
+            </div>
+            <button type="submit" class="btn-submit">نشر السيارة للبيع</button>
         </form>
     </div>
 
@@ -440,7 +528,11 @@
 
     <!-- 📱 شريط التنقل السفلي -->
     <nav class="bottom-nav">
-        <div class="nav-item active" onclick="switchTab('tab-parts')">
+        <div class="nav-item active" onclick="switchTab('tab-buy-sell')">
+            <i class="fas fa-car"></i>
+            <span>بيع وشراء</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('tab-parts')">
             <i class="fas fa-wrench"></i>
             <span>القطع</span>
         </div>
@@ -450,7 +542,7 @@
         </div>
         <div class="nav-item" onclick="switchTab('tab-transport')">
             <i class="fas fa-globe"></i>
-            <span>نقل دولي</span>
+            <span>شحن دولي</span>
         </div>
         <div class="nav-item" onclick="switchTab('tab-profile')">
             <i class="fas fa-user"></i>
@@ -459,20 +551,21 @@
     </nav>
 
     <script>
-        // إخفاء شاشة الترحيب تلقائياً بعد 2.5 ثانية
+        // إخفاء Splash Screen تلقائياً
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splashScreen');
                 splash.style.opacity = '0';
                 splash.style.visibility = 'hidden';
-            }, 2500);
+            }, 2000);
         });
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             
-            document.getElementById(tabId).classList.add('active');
+            const targetTab = document.getElementById(tabId);
+            if(targetTab) targetTab.classList.add('active');
         }
 
         function toggleTransportMode(mode) {
@@ -489,12 +582,24 @@
             }
         }
 
+        function changeLanguage(lang) {
+            if (lang === 'en') {
+                document.documentElement.dir = 'ltr';
+                alert("Language changed to English");
+            } else if (lang === 'ar') {
+                document.documentElement.dir = 'rtl';
+                alert("تم تغيير اللغة إلى العربية");
+            } else {
+                alert("Language selected: " + lang);
+            }
+        }
+
         function closeAuth() {
             document.getElementById('authModal').style.display = 'none';
         }
 
         function loginWithGoogle() {
-            alert("تم تسجيل الدخول بحساب Google بنجاح.");
+            alert("تم تسجيل الدخول بنجاح.");
             document.getElementById('userInfo').innerText = "مستخدم Google";
             document.getElementById('profileName').innerText = "مستخدم Google";
             closeAuth();
@@ -503,7 +608,7 @@
         function loginWithPhone() {
             let phone = prompt("أدخل رقم هاتفك مع الرمز الدولي:");
             if (phone) {
-                alert("تم إرسال كود التأكيد في رسالة نصية SMS.");
+                alert("تم إرسال رمز التفعيل SMS");
                 document.getElementById('userInfo').innerText = phone;
                 document.getElementById('profileName').innerText = phone;
                 closeAuth();
@@ -512,4 +617,3 @@
     </script>
 </body>
 </html>
-

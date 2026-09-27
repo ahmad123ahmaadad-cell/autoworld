@@ -333,6 +333,7 @@
                 <option value="EG">مصر</option>
                 <option value="IQ">العراق</option>
                 <option value="JO">الأردن</option>
+           <option value=" /كوريا 
                 <option value="TR">تركيا</option>
                 <option value="DE">ألمانيا</option>
                 <option value="US">الولايات المتحدة</option>
@@ -600,20 +601,24 @@
 
         function loginWithGoogle() {
             alert("تم تسجيل الدخول بنجاح.");
-            document.getElementById('userInfo').innerText = "مستخدم Google";
-            document.getElementById('profileName').innerText = "مستخدم Google";
-            closeAuth();
+              // دالة تسجيل الدخول بـ Google الاحترافية
+  window.loginWithGoogle = function() {
+    const provider = new window.firebase.auth.GoogleAuthProvider();
+    window.firebase.auth().signInWithPopup(provider)
+      .then((result) => {
+        const user = result.user;
+        // تحديث اسم المستخدم في الواجهة
+        if(document.getElementById("userName")) {
+          document.getElementById("userName").textContent = user.displayName;
         }
-
-        function loginWithPhone() {
-            let phone = prompt("أدخل رقم هاتفك مع الرمز الدولي:");
-            if (phone) {
-                alert("تم إرسال رمز التفعيل SMS");
-                document.getElementById('userInfo').innerText = phone;
-                document.getElementById('profileName').innerText = phone;
-                closeAuth();
-            }
+        // إخفاء نافذة تسجيل الدخول فوراً
+        const loginModal = document.getElementById("loginModal");
+        if(loginModal) { 
+          loginModal.style.display = "none"; 
         }
-    </script>
-</body>
-</html>
+      })
+      .catch((error) => {
+        console.error("خطأ في تسجيل الدخول: ", error.message);
+      });
+  };
+            

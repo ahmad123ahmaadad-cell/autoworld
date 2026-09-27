@@ -23,20 +23,39 @@
         #splashScreen h1 { font-size: 28px; margin-bottom: 5px; color: #fff; }
         #splashScreen p { font-size: 14px; color: #ff3333; }
 
-        /* الواجهة الرئيسية */
-        #appContent { display: none; padding: 20px; }
+        /* التطبيق الرئيسي */
+        #appContent { display: none; padding: 20px; max-width: 600px; margin: 0 auto; }
         header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
-        .lang-btns button { background: #222; color: #fff; border: 1px solid #444; padding: 5px 10px; cursor: pointer; border-radius: 5px; }
+        .lang-btns button { background: #222; color: #fff; border: 1px solid #444; padding: 6px 12px; cursor: pointer; border-radius: 5px; font-weight: bold; }
+        .lang-btns button:hover { background: #ff3333; border-color: #ff3333; }
         
-        .section-title { font-size: 20px; margin: 20px 0 10px; color: #ff3333; border-right: 4px solid #ff3333; padding-right: 8px; }
+        .section-title { font-size: 18px; margin: 20px 0 10px; color: #ff3333; border-right: 4px solid #ff3333; padding-right: 8px; }
         
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; }
-        .card { background: #161616; border: 1px solid #222; border-radius: 10px; padding: 15px; text-align: center; cursor: pointer; transition: 0.3s; }
+        .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .card { 
+            background: #161616; border: 1px solid #333; border-radius: 10px; 
+            padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; 
+            -webkit-tap-highlight-color: transparent;
+        }
+        .card:active { transform: scale(0.97); background: #222; }
         .card:hover { border-color: #ff3333; background: #1f1f1f; }
-        .card h3 { font-size: 16px; margin-bottom: 8px; }
-        .card p { font-size: 12px; color: #aaa; }
+        .card h3 { font-size: 15px; margin-bottom: 5px; color: #fff; }
+        .card p { font-size: 11px; color: #aaa; }
 
-        select { width: 100%; padding: 10px; background: #161616; color: #fff; border: 1px solid #444; border-radius: 5px; margin-bottom: 15px; }
+        select, input, textarea { width: 100%; padding: 12px; background: #161616; color: #fff; border: 1px solid #444; border-radius: 8px; margin-bottom: 12px; font-size: 14px; }
+        
+        /* النافذة المنبثقة (Modal) للطلب والنشر */
+        #actionModal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; padding: 20px;
+        }
+        .modal-content {
+            background: #181818; border: 1px solid #ff3333; border-radius: 12px;
+            width: 100%; max-width: 400px; padding: 20px; position: relative;
+        }
+        .modal-content h3 { margin-bottom: 15px; color: #ff3333; font-size: 18px; }
+        .close-btn { background: #333; color: #fff; border: none; padding: 10px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 5px; }
+        .submit-btn { background: #ff3333; color: #fff; border: none; padding: 12px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -53,13 +72,13 @@
         <header>
             <h2>Lamar Cars</h2>
             <div class="lang-btns">
-                <button onclick="changeLanguage('ar')">العربية</button>
-                <button onclick="changeLanguage('en')">English</button>
+                <button onclick="changeLanguage('ar')">AR</button>
+                <button onclick="changeLanguage('en')">EN</button>
             </div>
         </header>
 
         <!-- اختيار الدولة -->
-        <label id="countryLabel">اختر الدولة:</label>
+        <label id="countryLabel" style="font-size: 13px; color: #bbb;">اختر الدولة:</label>
         <select id="countrySelect">
             <option value="all">جميع الدول / All Countries</option>
             <option value="kr">كوريا / Korea</option>
@@ -75,33 +94,44 @@
         <!-- الأقسام الرئيسية -->
         <div class="section-title" id="secParts">قطع السيارات (عرض وطلب)</div>
         <div class="grid-container">
-            <div class="card"><h3 id="txtBuyPart">طلب قطعة</h3><p>ابحث واطلب قطعتك</p></div>
-            <div class="card"><h3 id="txtSellPart">عرض قطعة</h3><p>اعرض قطع للبيع</p></div>
+            <div class="card" onclick="openModal('طلب قطعة غيار')"><h3 id="txtBuyPart">طلب قطعة</h3><p>ابحث واطلب قطعتك</p></div>
+            <div class="card" onclick="openModal('عرض قطعة غيار للبيع')"><h3 id="txtSellPart">عرض قطعة</h3><p>اعرض قطع للبيع</p></div>
         </div>
 
         <div class="section-title" id="secCars">بيع وشراء السيارات</div>
         <div class="grid-container">
-            <div class="card"><h3 id="txtBuyCar">شراء سيارة</h3><p>تصفح واطلب سيارتك</p></div>
-            <div class="card"><h3 id="txtSellCar">بيع سيارة</h3><p>اعرض سيارتك للسوق</p></div>
+            <div class="card" onclick="openModal('شراء سيارة')"><h3 id="txtBuyCar">شراء سيارة</h3><p>تصفح واطلب سيارتك</p></div>
+            <div class="card" onclick="openModal('بيع سيارة')"><h3 id="txtSellCar">بيع سيارة</h3><p>اعرض سيارتك للسوق</p></div>
         </div>
 
         <div class="section-title" id="secRent">إيجار السيارات</div>
         <div class="grid-container">
-            <div class="card"><h3 id="txtRentReq">طلب إيجار</h3><p>استأجر سيارة בקלות</p></div>
-            <div class="card"><h3 id="txtRentOff">عرض للتعشير</h3><p>أجر سيارتك الآن</p></div>
+            <div class="card" onclick="openModal('طلب إيجار سيارة')"><h3 id="txtRentReq">طلب إيجار</h3><p>استأجر سيارة بسهولة</p></div>
+            <div class="card" onclick="openModal('عرض سيارة للإيجار')"><h3 id="txtRentOff">عرض للإيجار</h3><p>أجر سيارتك الآن</p></div>
         </div>
 
         <div class="section-title" id="secShip">نقل السيارات الدولي</div>
-        <div class="grid-container">
-            <div class="card" style="grid-column: span 2;">
+        <div class="grid-container" style="grid-template-columns: 1fr;">
+            <div class="card" onclick="openModal('طلب شحن سيارة دولي')">
                 <h3 id="txtShipTitle">شحن باب البيت</h3>
-                <p id="txtShipDesc">نقل السيارات من كوريا، ألمانيا، وجميع دول العالم حتى باب منزلك بكل امن وسرعة.</p>
+                <p id="txtShipDesc">نقل السيارات من كوريا، ألمانيا، وجميع دول العالم حتى باب منزلك بكل أمان وسرعة.</p>
             </div>
         </div>
     </div>
 
+    <!-- نافذة الإدخال التفاعلية -->
+    <div id="actionModal">
+        <div class="modal-content">
+            <h3 id="modalTitle">عنوان النافذة</h3>
+            <input type="text" id="itemName" placeholder="اسم أو نوع السيارة / القطعة">
+            <textarea id="itemDesc" rows="3" placeholder="تفاصيل الطلب أو المواصفات..."></textarea>
+            <button class="submit-btn" onclick="submitForm()">إرسال الطلب</button>
+            <button class="close-btn" onclick="closeModal()" style="margin-top: 8px;">إلغاء</button>
+        </div>
+    </div>
+
     <script>
-        // إخفاء شاشة الترحيب تلقائياً بعد ثانيتين ودخول التطبيق بسلاسة
+        // إخفاء شاشة الترحيب بسلاسة
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splashScreen');
@@ -110,11 +140,33 @@
                 setTimeout(() => {
                     splash.style.display = 'none';
                     app.style.display = 'block';
-                }, 500);
-            }, 2000); // مدة عرض شاشة الترحيب ثانيتان
+                }, 400);
+            }, 1800);
         });
 
-        // دالة تغيير اللغة البسيطة
+        // دوال النوافذ التفاعلية للاستجابة السريعة عند النقر
+        function openModal(title) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('actionModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('actionModal').style.display = 'none';
+            document.getElementById('itemName').value = '';
+            document.getElementById('itemDesc').value = '';
+        }
+
+        function submitForm() {
+            const name = document.getElementById('itemName').value;
+            if(!name) {
+                alert('الرجاء ملء الحقول المطلوبة!');
+                return;
+            }
+            alert('تم إرسال طلبك بنجاح وسيتم معالجته فوراً!');
+            closeModal();
+        }
+
+        // تغيير اللغة
         function changeLanguage(lang) {
             if (lang === 'en') {
                 document.documentElement.dir = 'ltr';
@@ -128,7 +180,7 @@
                 document.getElementById('secRent').innerText = 'Car Rental';
                 document.getElementById('txtRentReq').innerText = 'Rent Request';
                 document.getElementById('txtRentOff').innerText = 'Offer Rental';
-                document.getElementById('secShip').innerText = 'International Car Shipping';
+                document.getElementById('secShip').innerText = 'International Shipping';
                 document.getElementById('txtShipTitle').innerText = 'Door-to-Door Shipping';
                 document.getElementById('txtShipDesc').innerText = 'Shipping cars from Korea, Germany, and worldwide safely to your doorstep.';
             } else {

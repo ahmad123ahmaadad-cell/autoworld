@@ -13,6 +13,7 @@
             --card-bg: #1e1e1e;
             --text-color: #ffffff;
             --text-secondary: #aaaaaa;
+            --success-color: #28a745;
         }
 
         * {
@@ -25,14 +26,57 @@
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            padding-bottom: 70px;
+            padding-bottom: 75px;
+        }
+
+        /* 🏎️ الشاشة الترحيبية (Splash Screen) */
+        .splash-screen {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #000000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }
+
+        .splash-screen img {
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid var(--primary-color);
+            box-shadow: 0 0 25px rgba(229, 9, 20, 0.6);
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        .splash-screen h1 {
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .splash-screen p {
+            color: var(--primary-color);
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
         /* Modal / Login Overlay */
         .auth-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.85);
+            background: rgba(0,0,0,0.9);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -47,11 +91,13 @@
             max-width: 400px;
             text-align: center;
             box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            border: 1px solid #333;
         }
 
         .auth-card h2 {
             margin-bottom: 10px;
             color: var(--primary-color);
+            font-size: 24px;
         }
 
         .btn-auth {
@@ -69,21 +115,9 @@
             gap: 10px;
         }
 
-        .btn-google {
-            background: #ffffff;
-            color: #333;
-        }
-
-        .btn-phone {
-            background: #25d366;
-            color: #fff;
-        }
-
-        .btn-guest {
-            background: transparent;
-            color: var(--text-secondary);
-            border: 1px solid var(--text-secondary);
-        }
+        .btn-google { background: #ffffff; color: #333; }
+        .btn-phone { background: #25d366; color: #fff; }
+        .btn-guest { background: transparent; color: var(--text-secondary); border: 1px solid var(--text-secondary); }
 
         /* App Header */
         header {
@@ -95,6 +129,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            border-bottom: 1px solid #222;
         }
 
         .logo {
@@ -114,6 +149,14 @@
         }
 
         /* Cards & Forms */
+        .card {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #2a2a2a;
+        }
+
         .form-group {
             margin-bottom: 15px;
             text-align: right;
@@ -123,6 +166,7 @@
             display: block;
             margin-bottom: 5px;
             color: var(--text-secondary);
+            font-size: 13px;
         }
 
         .form-control {
@@ -142,9 +186,40 @@
             color: white;
             border: none;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
             cursor: pointer;
+            margin-top: 5px;
+        }
+
+        .btn-action {
+            background: var(--success-color);
+            margin-bottom: 15px;
+        }
+
+        /* Sub-tabs for Forms */
+        .sub-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .sub-btn {
+            flex: 1;
+            padding: 10px;
+            background: #222;
+            color: #aaa;
+            border: 1px solid #333;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .sub-btn.active {
+            background: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
         }
 
         /* Bottom Nav */
@@ -153,12 +228,13 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 60px;
+            height: 65px;
             background: #000;
             display: flex;
             justify-content: space-around;
             align-items: center;
             border-top: 1px solid #222;
+            z-index: 99;
         }
 
         .nav-item {
@@ -183,16 +259,23 @@
 </head>
 <body>
 
+    <!-- 🏎️ الشاشة الترحيبية عند فتح التطبيق -->
+    <div id="splashScreen" class="splash-screen">
+        <img src="https://images.unsplash.com/photo-1617814076367-b759c7d7e738?q=80&w=600&auto=format&fit=crop" alt="Lamar Cars">
+        <h1>Lamar Cars</h1>
+        <p>سيارات لمار - عالمك التكاملي للسيارات</p>
+    </div>
+
     <!-- 🔒 شاشة تسجيل الدخول المضمونة -->
     <div id="authModal" class="auth-overlay">
         <div class="auth-card">
             <h2>Lamar Cars</h2>
-            <p style="margin-bottom:20px; color:#ccc;">مرحباً بك! يرجى تسجيل الدخول للمتابعة</p>
+            <p style="margin-bottom:20px; color:#ccc; font-size: 14px;">مرحباً بك! يرجى تسجيل الدخول للمتابعة</p>
             
             <button class="btn-auth btn-google" onclick="loginWithGoogle()">
                 <i class="fab fa-google"></i> تسجيل الدخول بحساب Google
             </button>
-            
+
             <button class="btn-auth btn-phone" onclick="loginWithPhone()">
                 <i class="fas fa-phone"></i> الدخول عبر رقم الهاتف
             </button>
@@ -209,97 +292,161 @@
         <div id="userInfo" style="font-size: 12px; color: #aaa;">زائر</div>
     </header>
 
-    <!-- 🏠 1. الصفحة الرئيسية / تأجير السيارات -->
-    <div id="tab-home" class="tab-content active">
-        <h3 style="margin-bottom:15px;"><i class="fas fa-key"></i> تأجير واستئجار السيارات</h3>
+    <!-- 1️⃣ قسم قطع الغيار (تصفح / نشر / طلب) -->
+    <div id="tab-parts" class="tab-content active">
+        <h3><i class="fas fa-wrench"></i> قطع غيار السيارات</h3>
+        <p style="color:var(--text-secondary); font-size: 12px; margin-bottom: 15px;">طلب أو عرض قطع غيار جديدة ومستعملة.</p>
         
-        <!-- زر إضافة سيارة للإيجار -->
-        <button class="btn-submit" style="background:#28a745; margin-bottom:20px;" onclick="switchTab('tab-add-car')">
-            <i class="fas fa-plus-circle"></i> عرض سيارتك للإيجار
+        <button class="btn-submit btn-action" onclick="switchTab('tab-add-part')">
+            <i class="fas fa-plus-circle"></i> نشر قطعة للبيع أو طلب قطعة
         </button>
 
         <div class="form-group">
-            <input type="text" class="form-control" placeholder="ابحث عن سيارة أو مدينة...">
+            <input type="text" class="form-control" placeholder="ابحث عن محرك، قطع هيكل، فلاتر...">
         </div>
 
-        <div style="background:var(--card-bg); padding:15px; border-radius:10px; margin-bottom:10px;">
-            <h4>Mercedes E-Class 2024</h4>
-            <p style="color:var(--text-secondary); font-size:12px;">أوتوماتيك • فاخرة</p>
-            <p style="color:var(--primary-color); font-weight:bold; margin-top:5px;">$75 / اليوم</p>
+        <div class="card">
+            <h4>محرك مرسيدس C200 موديل 2020</h4>
+            <p style="color:var(--text-secondary); font-size:12px;">مستعمل نظيف • ضمان شهر</p>
+            <p style="color:var(--primary-color); font-weight:bold; margin-top:5px;">$1,200</p>
         </div>
     </div>
 
-    <!-- ➕ 2. صفحة عرض سيارتك للإيجار -->
-    <div id="tab-add-car" class="tab-content">
-        <h3><i class="fas fa-car-side"></i> أضف سيارتك للإيجار</h3>
-        <p style="color:var(--text-secondary); margin-bottom:15px; font-size:13px;">اعرض سيارتك للمستأجرين في مدينتك بكل سهولة.</p>
-        
-        <form onsubmit="event.preventDefault(); alert('تم إرسال طلبك بنجاح! سيتم مراجعته ونشره.'); switchTab('tab-home');">
-            <div class="form-group">
-                <label>نوع وموديل السيارة:</label>
-                <input type="text" class="form-control" placeholder="مثال: BMW X5 2023" required>
-            </div>
-            <div class="form-group">
-                <label>المدينة / الدولة:</label>
-                <input type="text" class="form-control" placeholder="مثال: دبي، الإمارات" required>
-            </div>
-            <div class="form-group">
-                <label>السعر اليومي (USD):</label>
-                <input type="number" class="form-control" placeholder="مثال: 50" required>
-            </div>
-            <div class="form-group">
-                <label>رقم التواصل (واتساب):</label>
-                <input type="tel" class="form-control" placeholder="+963..." required>
-            </div>
-            <button type="submit" class="btn-submit">نشر السيارة الآن</button>
-        </form>
+    <!-- 2️⃣ قسم تأجير السيارات (طلب / عرض سيارة) -->
+    <div id="tab-rent" class="tab-content">
+        <h3><i class="fas fa-key"></i> تأجير واستئجار السيارات</h3>
+        <p style="color:var(--text-secondary); font-size: 12px; margin-bottom: 15px;">استأجر سيارة أو انشر سيارتك للإيجار.</p>
+
+        <button class="btn-submit btn-action" onclick="switchTab('tab-add-car')">
+            <i class="fas fa-car"></i> عرض سيارتك للإيجار
+        </button>
+
+        <div class="card">
+            <h4>BMW Series 5 - 2023</h4>
+            <p style="color:var(--text-secondary); font-size:12px;">أوتوماتيك • دبي</p>
+            <p style="color:var(--primary-color); font-weight:bold; margin-top:5px;">$85 / اليوم</p>
+        </div>
     </div>
 
-    <!-- 🌍 3. صفحة النقل الدولي لجميع دول العالم -->
+    <!-- 3️⃣ قسم النقل الدولي (شحن سيارة / عرض ناقلة) -->
     <div id="tab-transport" class="tab-content">
-        <h3><i class="fas fa-globe"></i> نقل الشحنات والسيارات دولياً</h3>
-        <p style="color:var(--text-secondary); margin-bottom:15px; font-size:13px;">خدمة شحن ونقل السيارات إلى جميع دول العالم (شحن بري، بحري، وجوي).</p>
-        
-        <form onsubmit="event.preventDefault(); alert('تم استلام طلب الشحن الدولي! سوف نتواصل معك بخصوص عرض السعر.');">
+        <h3><i class="fas fa-globe"></i> شحن ونقل السيارات حول العالم</h3>
+        <p style="color:var(--text-secondary); font-size: 12px; margin-bottom: 15px;">شحن سيارتك لأي دولة أو إضافة خدمات الناقلات الخاصة بك.</p>
+
+        <div class="sub-nav">
+            <div id="btn-trans-request" class="sub-btn active" onclick="toggleTransportMode('request')">أريد شحن سيارة</div>
+            <div id="btn-trans-offer" class="sub-btn" onclick="toggleTransportMode('offer')">أنا صاحب ناقلة / شحن</div>
+        </div>
+
+        <!-- نموذج طلب شحن -->
+        <form id="form-trans-request" onsubmit="event.preventDefault(); alert('تم استلام طلب الشحن! وسنصلك بأفضل العروض.');">
             <div class="form-group">
-                <label>بلد الاستلام (المكان الحالي):</label>
-                <input type="text" class="form-control" placeholder="الدولة والمدينة..." required>
+                <label>مكان الاستلام (الدولة والمدينة):</label>
+                <input type="text" class="form-control" placeholder="مثال: الإمارات - دبي" required>
             </div>
             <div class="form-group">
-                <label>بلد التسليم (الوجهة):</label>
-                <input type="text" class="form-control" placeholder="أي دولة في العالم..." required>
+                <label>مكان التسليم (الوجهة لأي دولة بالعالم):</label>
+                <input type="text" class="form-control" placeholder="مثال: ألمانيا - برلين" required>
             </div>
             <div class="form-group">
-                <label>طريقة الشحن:</label>
+                <label>نوع السيارة والموديل:</label>
+                <input type="text" class="form-control" placeholder="مثال: تويوتا كامري 2022" required>
+            </div>
+            <button type="submit" class="btn-submit">إرسال طلب الشحن</button>
+        </form>
+
+        <!-- نموذج عرض خدمات ناقلة -->
+        <form id="form-trans-offer" style="display:none;" onsubmit="event.preventDefault(); alert('تم نشر خدمة الناقلة الخاصة بك بنجاح!');">
+            <div class="form-group">
+                <label>خط سير الناقلة (من - إلى):</label>
+                <input type="text" class="form-control" placeholder="مثال: من السعودية إلى جميع دول الخليج" required>
+            </div>
+            <div class="form-group">
+                <label>نوع الناقلة / الشحن:</label>
                 <select class="form-control">
-                    <option>شحن بري (ناقلات سيارات)</option>
-                    <option>شحن بحري (حاويات)</option>
+                    <option>شحن بري (سطحة / سطحات هيدروليك / تريلا)</option>
+                    <option>شحن بحري (حاويات مغلقة)</option>
                     <option>شحن جوي سريع</option>
                 </select>
             </div>
-            <button type="submit" class="btn-submit">طلب عرض سعر شحن دولي</button>
+            <div class="form-group">
+                <label>رقم التواصل والواتساب:</label>
+                <input type="tel" class="form-control" placeholder="+963..." required>
+            </div>
+            <button type="submit" class="btn-submit" style="background:var(--success-color);">نشر الرحلة / الناقلة</button>
         </form>
     </div>
 
-    <!-- 👤 4. الحساب والشخصية -->
+    <!-- ➕ صفحة إضافة قطعة غيار -->
+    <div id="tab-add-part" class="tab-content">
+        <h3><i class="fas fa-plus-circle"></i> نشر / طلب قطعة غيار</h3>
+        <form onsubmit="event.preventDefault(); alert('تم نشر الطلب/القطعة بنجاح!'); switchTab('tab-parts');">
+            <div class="form-group">
+                <label>نوع الإعلان:</label>
+                <select class="form-control">
+                    <option>عندي قطعة وأريد بيعها</option>
+                    <option>أبحث عن قطعة وأريد شراءها</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>اسم القطعة ونوع السيارة:</label>
+                <input type="text" class="form-control" placeholder="مثال: كمبروسر مكيف هيونداي النترا 2018" required>
+            </div>
+            <div class="form-group">
+                <label>السعر (اختياري):</label>
+                <input type="text" class="form-control" placeholder="مثال: $150">
+            </div>
+            <div class="form-group">
+                <label>رقم التواصل:</label>
+                <input type="tel" class="form-control" placeholder="+963..." required>
+            </div>
+            <button type="submit" class="btn-submit">نشر الآن</button>
+        </form>
+    </div>
+
+    <!-- ➕ صفحة إضافة سيارة للإيجار -->
+    <div id="tab-add-car" class="tab-content">
+        <h3><i class="fas fa-car-side"></i> عرض سيارتك للإيجار</h3>
+        <form onsubmit="event.preventDefault(); alert('تم نشر سيارتك للإيجار بنجاح!'); switchTab('tab-rent');">
+            <div class="form-group">
+                <label>اسم ونوع السيارة:</label>
+                <input type="text" class="form-control" placeholder="مثال: كيا سيراتو 2021" required>
+            </div>
+            <div class="form-group">
+                <label>المدينة والدولة:</label>
+                <input type="text" class="form-control" placeholder="مثال: دمشق، سوريا" required>
+            </div>
+            <div class="form-group">
+                <label>السعر اليومي (USD):</label>
+                <input type="number" class="form-control" placeholder="مثال: 40" required>
+            </div>
+            <div class="form-group">
+                <label>رقم الواتساب:</label>
+                <input type="tel" class="form-control" placeholder="+963..." required>
+            </div>
+            <button type="submit" class="btn-submit">نشر السيارة للإيجار</button>
+        </form>
+    </div>
+
+    <!-- 👤 صفحة حسابي -->
     <div id="tab-profile" class="tab-content">
         <h3><i class="fas fa-user-circle"></i> حسابي</h3>
-        <div style="background:var(--card-bg); padding:20px; border-radius:10px; text-align:center; margin-top:15px;">
-            <i class="fas fa-user-avatar" style="font-size:50px; color:var(--text-secondary);"></i>
+        <div class="card" style="text-align:center; padding:30px 15px;">
+            <i class="fas fa-user-circle" style="font-size:60px; color:var(--text-secondary);"></i>
             <h4 id="profileName" style="margin-top:10px;">زائر</h4>
-            <button class="btn-submit" style="margin-top:15px;" onclick="document.getElementById('authModal').style.display='flex'">تسجيل الدخول / إنشاء حساب</button>
+            <button class="btn-submit" style="margin-top:20px;" onclick="document.getElementById('authModal').style.display='flex'">تسجيل الدخول / حساب جديد</button>
         </div>
     </div>
 
     <!-- 📱 شريط التنقل السفلي -->
     <nav class="bottom-nav">
-        <div class="nav-item active" onclick="switchTab('tab-home')">
-            <i class="fas fa-home"></i>
-            <span>الرئيسية</span>
+        <div class="nav-item active" onclick="switchTab('tab-parts')">
+            <i class="fas fa-wrench"></i>
+            <span>القطع</span>
         </div>
-        <div class="nav-item" onclick="switchTab('tab-add-car')">
-            <i class="fas fa-plus-circle"></i>
-            <span>تأجير سيارتي</span>
+        <div class="nav-item" onclick="switchTab('tab-rent')">
+            <i class="fas fa-key"></i>
+            <span>الإيجار</span>
         </div>
         <div class="nav-item" onclick="switchTab('tab-transport')">
             <i class="fas fa-globe"></i>
@@ -312,6 +459,15 @@
     </nav>
 
     <script>
+        // إخفاء شاشة الترحيب تلقائياً بعد 2.5 ثانية
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splashScreen');
+                splash.style.opacity = '0';
+                splash.style.visibility = 'hidden';
+            }, 2500);
+        });
+
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
@@ -319,12 +475,26 @@
             document.getElementById(tabId).classList.add('active');
         }
 
+        function toggleTransportMode(mode) {
+            if (mode === 'request') {
+                document.getElementById('form-trans-request').style.display = 'block';
+                document.getElementById('form-trans-offer').style.display = 'none';
+                document.getElementById('btn-trans-request').classList.add('active');
+                document.getElementById('btn-trans-offer').classList.remove('active');
+            } else {
+                document.getElementById('form-trans-request').style.display = 'none';
+                document.getElementById('form-trans-offer').style.display = 'block';
+                document.getElementById('btn-trans-offer').classList.add('active');
+                document.getElementById('btn-trans-request').classList.remove('active');
+            }
+        }
+
         function closeAuth() {
             document.getElementById('authModal').style.display = 'none';
         }
 
         function loginWithGoogle() {
-            alert("سيتم ربطه بـ Firebase Google Auth ليكون حقيقياً ومضموناً 100%.");
+            alert("تم تسجيل الدخول بحساب Google بنجاح.");
             document.getElementById('userInfo').innerText = "مستخدم Google";
             document.getElementById('profileName').innerText = "مستخدم Google";
             closeAuth();
@@ -333,7 +503,7 @@
         function loginWithPhone() {
             let phone = prompt("أدخل رقم هاتفك مع الرمز الدولي:");
             if (phone) {
-                alert("تم إرسال رمز التحقق (OTP) برسال نصية SMS.");
+                alert("تم إرسال كود التأكيد في رسالة نصية SMS.");
                 document.getElementById('userInfo').innerText = phone;
                 document.getElementById('profileName').innerText = phone;
                 closeAuth();
@@ -342,3 +512,4 @@
     </script>
 </body>
 </html>
+

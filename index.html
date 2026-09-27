@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lamar Cars - سيارات لمار</title>
+    <title>Lamar Cars - Global Services</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Tahoma, sans-serif; }
-        body { background-color: #0b0b0b; color: #fff; direction: rtl; padding-bottom: 40px; }
+        body { background-color: #0b0b0b; color: #fff; direction: ltr; padding-bottom: 40px; }
         
         /* شاشة الترحيب */
         #splashScreen {
@@ -17,19 +17,33 @@
         }
         .splash-img {
             width: 150px; height: 150px; border-radius: 50%;
-            border: 3px solid #ff0000; object-fit: cover;
+            border: 3px solid #ff3333; object-fit: cover;
             box-shadow: 0 0 20px rgba(255,0,0,0.6); margin-bottom: 20px;
         }
-        #splashScreen h1 { font-size: 28px; margin-bottom: 5px; color: #fff; }
+        #splashScreen h1 { font-size: 28px; margin-bottom: 5px; color: #fff; letter-spacing: 1px; }
         #splashScreen p { font-size: 14px; color: #ff3333; }
 
         /* التطبيق الرئيسي */
         #appContent { display: none; padding: 15px; max-width: 600px; margin: 0 auto; }
         header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
-        .lang-btns button { background: #222; color: #fff; border: 1px solid #444; padding: 6px 12px; cursor: pointer; border-radius: 5px; font-weight: bold; }
-        .lang-btns button:hover { background: #ff3333; border-color: #ff3333; }
+        header h2 { color: #ff3333; letter-spacing: 1px; }
+
+        /* بانر الشعار الفخم أعلى التطبيق */
+        .brand-banner {
+            background: linear-gradient(135deg, #111, #1a1a1a);
+            border: 2px solid #ff3333; border-radius: 20px; padding: 25px;
+            text-align: center; margin-bottom: 20px;
+            box-shadow: 0 0 25px rgba(255,51,51,0.4);
+        }
+        .brand-banner img {
+            width: 130px; height: 130px; border-radius: 50%;
+            border: 3px solid #ff3333; object-fit: cover; margin-bottom: 15px;
+            box-shadow: 0 0 15px rgba(255,51,51,0.6);
+        }
+        .brand-banner h1 { font-size: 24px; color: #fff; letter-spacing: 2px; margin-bottom: 5px; }
+        .brand-banner p { font-size: 13px; color: #ff3333; font-weight: bold; letter-spacing: 1px; }
         
-        .section-title { font-size: 18px; margin: 20px 0 10px; color: #ff3333; border-right: 4px solid #ff3333; padding-right: 8px; }
+        .section-title { font-size: 18px; margin: 20px 0 10px; color: #ff3333; border-left: 4px solid #ff3333; padding-left: 8px; }
         
         .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .card { 
@@ -65,17 +79,21 @@
         .close-btn { background: #333; color: #fff; border: none; padding: 10px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 5px; }
         .submit-btn { background: #ff3333; color: #fff; border: none; padding: 12px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: bold; }
 
-        /* شبكة عرض المنشورات والسيارات بالأسفل */
-        #listingsFeed { display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 15px; }
+        /* تصميم المعرض الحديث (بنظام عمودين مثل التطبيق الاحترافي) */
+        #listingsFeed { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
         .listing-card {
             background: #161616; border: 1px solid #333; border-radius: 10px; overflow: hidden;
             display: flex; flex-direction: column; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            transition: 0.2s;
         }
-        .listing-img { width: 100%; height: 180px; object-fit: cover; background: #222; }
-        .listing-body { padding: 12px; }
-        .listing-tag { font-size: 11px; background: #ff3333; color: #fff; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-bottom: 5px; }
-        .listing-title { font-size: 16px; font-weight: bold; margin-bottom: 5px; color: #fff; }
-        .listing-desc { font-size: 13px; color: #bbb; }
+        .listing-card:hover { border-color: #ff3333; }
+        .listing-img { width: 100%; height: 130px; object-fit: cover; background: #222; }
+        .listing-body { padding: 10px; display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1; }
+        .listing-tag { font-size: 10px; background: #ff3333; color: #fff; padding: 2px 5px; border-radius: 4px; display: inline-block; margin-bottom: 4px; width: fit-content; }
+        .listing-title { font-size: 13px; font-weight: bold; margin-bottom: 4px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .listing-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px solid #222; padding-top: 6px; }
+        .listing-price { font-size: 13px; font-weight: bold; color: #ff3333; }
+        .listing-year { font-size: 11px; color: #aaa; }
     </style>
 </head>
 <body>
@@ -84,70 +102,77 @@
     <div id="splashScreen">
         <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=500" alt="Lamar Cars" class="splash-img">
         <h1>Lamar Cars</h1>
-        <p>سيارات لمار - سوق السيارات العالمي</p>
+        <p>Global Automotive Services</p>
     </div>
 
     <!-- التطبيق الرئيسي -->
     <div id="appContent">
         <header>
             <h2>Lamar Cars</h2>
-            <div class="lang-btns">
-                <button onclick="changeLanguage('ar')">AR</button>
-                <button onclick="changeLanguage('en')">EN</button>
-            </div>
         </header>
 
+        <!-- بانر الشعار الفخم -->
+        <div class="brand-banner">
+            <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=500" alt="Lamar Cars">
+            <h1>LAMAR CARS</h1>
+            <p>GLOBAL AUTOMOTIVE SERVICES</p>
+        </div>
+
         <!-- اختيار الدولة -->
-        <label id="countryLabel" style="font-size: 13px; color: #bbb;">اختر الدولة:</label>
+        <label style="font-size: 13px; color: #bbb;">Select Country:</label>
         <select id="countrySelect">
-            <option value="all">جميع الدول / All Countries</option>
-            <option value="kr">كوريا / Korea</option>
-            <option value="de">ألمانيا / Germany</option>
-            <option value="sy">سوريا / Syria</option>
-            <option value="ae">الإمارات / UAE</option>
-            <option value="sa">السعودية / Saudi Arabia</option>
-            <option value="lb">لبنان / Lebanon</option>
-            <option value="jo">الأردن / Jordan</option>
-            <option value="om">عمان / Oman</option>
+            <option value="all">All Countries</option>
+            <option value="kr">Korea</option>
+            <option value="de">Germany</option>
+            <option value="sy">Syria</option>
+            <option value="ae">UAE</option>
+            <option value="sa">Saudi Arabia</option>
+            <option value="lb">Lebanon</option>
+            <option value="jo">Jordan</option>
+            <option value="om">Oman</option>
         </select>
 
         <!-- الأقسام الرئيسية -->
-        <div class="section-title" id="secParts">قطع السيارات (عرض وطلب)</div>
+        <div class="section-title">Auto Parts (Buy & Sell)</div>
         <div class="grid-container">
-            <div class="card" onclick="openModal('طلب قطعة غيار')"><h3 id="txtBuyPart">طلب قطعة</h3><p>ابحث واطلب قطعتك</p></div>
-            <div class="card" onclick="openModal('عرض قطعة غيار للبيع')"><h3 id="txtSellPart">عرض قطعة</h3><p>اعرض قطع للبيع مع صورة</p></div>
+            <div class="card" onclick="openModal('Request Auto Part')"><h3>Request Part</h3><p>Find & request parts</p></div>
+            <div class="card" onclick="openModal('Offer Auto Part')"><h3>Offer Part</h3><p>Sell parts with image</p></div>
         </div>
 
-        <div class="section-title" id="secCars">بيع وشراء السيارات</div>
+        <div class="section-title">Car Trading</div>
         <div class="grid-container">
-            <div class="card" onclick="openModal('شراء سيارة')"><h3 id="txtBuyCar">شراء سيارة</h3><p>تصفح واطلب سيارتك</p></div>
-            <div class="card" onclick="openModal('بيع سيارة')"><h3 id="txtSellCar">بيع سيارة</h3><p>اعرض سيارتك مع صورة</p></div>
+            <div class="card" onclick="openModal('Buy a Car')"><h3>Buy Car</h3><p>Browse & buy cars</p></div>
+            <div class="card" onclick="openModal('Sell a Car')"><h3>Sell Car</h3><p>List your car for sale</p></div>
         </div>
 
-        <div class="section-title" id="secRent">إيجار السيارات</div>
+        <div class="section-title">Car Rental</div>
         <div class="grid-container">
-            <div class="card" onclick="openModal('طلب إيجار سيارة')"><h3 id="txtRentReq">طلب إيجار</h3><p>استأجر سيارة بسهولة</p></div>
-            <div class="card" onclick="openModal('عرض سيارة للإيجار')"><h3 id="txtRentOff">عرض للإيجار</h3><p>أجر سيارتك الآن</p></div>
+            <div class="card" onclick="openModal('Request Rental')"><h3>Rent Request</h3><p>Rent a car easily</p></div>
+            <div class="card" onclick="openModal('Offer Rental')"><h3>Offer Rental</h3><p>List your car for rent</p></div>
         </div>
 
-        <div class="section-title" id="secShip">نقل السيارات الدولي</div>
+        <div class="section-title">International Shipping</div>
         <div class="grid-container" style="grid-template-columns: 1fr;">
-            <div class="card" onclick="openModal('طلب شحن سيارة دولي')">
-                <h3 id="txtShipTitle">شحن باب البيت</h3>
-                <p id="txtShipDesc">نقل السيارات من كوريا، ألمانيا، وجميع دول العالم حتى باب منزلك بكل أمان وسرعة.</p>
+            <div class="card" onclick="openModal('Door-to-Door Shipping Request')">
+                <h3>Door-to-Door Shipping</h3>
+                <p>Shipping cars from Korea, Germany, and worldwide safely to your doorstep.</p>
             </div>
         </div>
 
-        <!-- قسم المعرض الحي للسيارات والطلبات -->
-        <div class="section-title" id="secFeedTitle">أحدث السيارات والطلبات المعروضة</div>
+        <!-- المعرض الحديث للسيارات والمنشورات -->
+        <div class="section-title">Latest Cars & Listings</div>
         <div id="listingsFeed">
-            <!-- سيارة افتراضية تجريبية شكلها فخم -->
             <div class="listing-card">
                 <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=500" class="listing-img" alt="Car">
                 <div class="listing-body">
-                    <span class="listing-tag">ألمانيا / Germany</span>
-                    <div class="listing-title">Mercedes AMG GT</div>
-                    <div class="listing-desc">سيارة بحالة الوكالة للبيع مع الشحن حتى باب البيت.</div>
+                    <div>
+                        <span class="listing-tag">Germany</span>
+                        <div class="listing-title">Mercedes AMG GT</div>
+                    </div>
+                    <div class="listing-footer">
+                        <span class="listing-price">$45,000</span>
+                        <span class="listing-year">2023</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -156,24 +181,25 @@
     <!-- نافذة الإدخال ونشر الصور (Modal) -->
     <div id="actionModal">
         <div class="modal-content">
-            <h3 id="modalTitle">عنوان النافذة</h3>
-            <input type="text" id="itemName" placeholder="اسم أو نوع السيارة / القطعة">
-            <textarea id="itemDesc" rows="3" placeholder="اكتب الوصف أو التفاصيل والسعر..."></textarea>
+            <h3 id="modalTitle">Modal Title</h3>
+            <input type="text" id="itemName" placeholder="Car / Model Name">
+            <input type="text" id="itemPrice" placeholder="Price (e.g. $25,000 or 1,000 USD)">
+            <input type="text" id="itemYear" placeholder="Year (e.g. 2025)">
+            <textarea id="itemDesc" rows="2" placeholder="Write extra details..."></textarea>
             
             <label for="itemImage" class="file-upload-label" id="uploadLabel">
-                📷 اضغط هنا لاختيار صورة من هاتفك
+                📷 Click here to select image
             </label>
             <input type="file" id="itemImage" accept="image/*" onchange="previewImageName()">
 
-            <button class="submit-btn" onclick="submitListing()">نشر الآن في التطبيق</button>
-            <button class="close-btn" onclick="closeModal()" style="margin-top: 8px;">إلغاء</button>
+            <button class="submit-btn" onclick="submitListing()">Publish Listing</button>
+            <button class="close-btn" onclick="closeModal()" style="margin-top: 8px;">Cancel</button>
         </div>
     </div>
 
     <script>
-        let selectedImageSrc = "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=500"; // صوره افتراضية إذا لم يرفع المستخدم
+        let selectedImageSrc = "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=500";
 
-        // إخفاء شاشة الترحيب بسلاسة
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splashScreen');
@@ -194,9 +220,11 @@
         function closeModal() {
             document.getElementById('actionModal').style.display = 'none';
             document.getElementById('itemName').value = '';
+            document.getElementById('itemPrice').value = '';
+            document.getElementById('itemYear').value = '';
             document.getElementById('itemDesc').value = '';
             document.getElementById('itemImage').value = '';
-            document.getElementById('uploadLabel').innerText = '📷 اضغط هنا لاختيار صورة من هاتفك';
+            document.getElementById('uploadLabel').innerText = '📷 Click here to select image';
             selectedImageSrc = "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=500";
         }
 
@@ -204,8 +232,7 @@
             const fileInput = document.getElementById('itemImage');
             const label = document.getElementById('uploadLabel');
             if (fileInput.files.length > 0) {
-                label.innerText = '✅ تم اختيار الصورة: ' + fileInput.files[0].name;
-                // قراءة الصورة وعرضها كمعاينة حية
+                label.innerText = '✅ Image Selected: ' + fileInput.files[0].name;
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     selectedImageSrc = e.target.result;
@@ -214,75 +241,38 @@
             }
         }
 
-        // نشر الإعلان وإضافته فورا كبطاقة سيارة في الصفحة
         function submitListing() {
             const name = document.getElementById('itemName').value;
-            const desc = document.getElementById('itemDesc').value;
+            const price = document.getElementById('itemPrice').value || 'Contact Us';
+            const year = document.getElementById('itemYear').value || 'New';
             const country = document.getElementById('countrySelect').selectedOptions[0].text;
             
             if(!name) {
-                alert('الرجاء كتابة اسم السيارة أو القطعة على الأقل!');
+                alert('Please enter the car or model name!');
                 return;
             }
 
             const feed = document.getElementById('listingsFeed');
             
-            // إنشاء بطاقة جديدة للسيارة أو الطلب
             const newCard = document.createElement('div');
             newCard.className = 'listing-card';
             newCard.innerHTML = `
                 <img src="${selectedImageSrc}" class="listing-img" alt="Listing">
                 <div class="listing-body">
-                    <span class="listing-tag">${country}</span>
-                    <div class="listing-title">${name}</div>
-                    <div class="listing-desc">${desc || 'بدون تفاصيل إضافية.'}</div>
+                    <div>
+                        <span class="listing-tag">${country}</span>
+                        <div class="listing-title">${name}</div>
+                    </div>
+                    <div class="listing-footer">
+                        <span class="listing-price">${price}</span>
+                        <span class="listing-year">${year}</span>
+                    </div>
                 </div>
             `;
 
-            // إضافة البطاقة في أول القائمة
             feed.prepend(newCard);
-
-            alert('تم نشر إعلانك وعرضه بنجاح في التطبيق!');
+            alert('Listing published successfully!');
             closeModal();
-        }
-
-        // تغيير اللغة
-        function changeLanguage(lang) {
-            if (lang === 'en') {
-                document.documentElement.dir = 'ltr';
-                document.getElementById('countryLabel').innerText = 'Select Country:';
-                document.getElementById('secParts').innerText = 'Auto Parts (Buy & Sell)';
-                document.getElementById('txtBuyPart').innerText = 'Request Part';
-                document.getElementById('txtSellPart').innerText = 'Offer Part';
-                document.getElementById('secCars').innerText = 'Car Trading';
-                document.getElementById('txtBuyCar').innerText = 'Buy Car';
-                document.getElementById('txtSellCar').innerText = 'Sell Car';
-                document.getElementById('secRent').innerText = 'Car Rental';
-                document.getElementById('txtRentReq').innerText = 'Rent Request';
-                document.getElementById('txtRentOff').innerText = 'Offer Rental';
-                document.getElementById('secShip').innerText = 'International Shipping';
-                document.getElementById('txtShipTitle').innerText = 'Door-to-Door Shipping';
-                document.getElementById('txtShipDesc').innerText = 'Shipping cars from Korea, Germany, and worldwide safely to your doorstep.';
-                document.getElementById('secFeedTitle').innerText = 'Latest Cars & Listings Feed';
-                document.getElementById('uploadLabel').innerText = '📷 Click here to select an image';
-            } else {
-                document.documentElement.dir = 'rtl';
-                document.getElementById('countryLabel').innerText = 'اختر الدولة:';
-                document.getElementById('secParts').innerText = 'قطع السيارات (عرض وطلب)';
-                document.getElementById('txtBuyPart').innerText = 'طلب قطعة';
-                document.getElementById('txtSellPart').innerText = 'عرض قطعة';
-                document.getElementById('secCars').innerText = 'بيع وشراء السيارات';
-                document.getElementById('txtBuyCar').innerText = 'شراء سيارة';
-                document.getElementById('txtSellCar').innerText = 'بيع سيارة';
-                document.getElementById('secRent').innerText = 'إيجار السيارات';
-                document.getElementById('txtRentReq').innerText = 'طلب إيجار';
-                document.getElementById('txtRentOff').innerText = 'عرض للإيجار';
-                document.getElementById('secShip').innerText = 'نقل السيارات الدولي';
-                document.getElementById('txtShipTitle').innerText = 'شحن باب البيت';
-                document.getElementById('txtShipDesc').innerText = 'نقل السيارات من كوريا، ألمانيا، وجميع دول العالم حتى باب منزلك بكل أمان وسرعة.';
-                document.getElementById('secFeedTitle').innerText = 'أحدث السيارات والطلبات المعروضة';
-                document.getElementById('uploadLabel').innerText = '📷 اضغط هنا لاختيار صورة من هاتفك';
-            }
         }
     </script>
 </body>
